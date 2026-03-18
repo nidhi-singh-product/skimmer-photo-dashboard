@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Roboto } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -35,21 +36,16 @@ export default function RootLayout({
         <nav className="sticky top-0 z-50 border-b border-sk-gray-100 bg-white/95 backdrop-blur-sm">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
             <Link href="/" className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sk-blue">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div>
-                <span className="text-lg font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
-                  Skimmer Photo Intelligence
-                </span>
-                <span className="ml-2 rounded-full bg-sk-sunrise-100 px-2 py-0.5 text-xs font-medium text-sk-sunrise">
-                  Proof of Concept
-                </span>
-              </div>
+              <Image
+                src="/skimmer-logo.svg"
+                alt="Skimmer"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+              />
+              <span className="text-lg font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
+                Photo Intelligence
+              </span>
             </Link>
             <div className="flex gap-1">
               <Link
