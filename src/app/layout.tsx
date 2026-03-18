@@ -39,11 +39,12 @@ export default function RootLayout({
               <Image
                 src="/skimmer-logo.svg"
                 alt="Skimmer"
-                width={32}
-                height={32}
-                className="h-8 w-8"
+                width={140}
+                height={20}
+                className="h-5 w-auto"
               />
-              <span className="text-lg font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
+              <span className="text-sm font-medium text-sk-text-medium">|</span>
+              <span className="text-base font-semibold text-sk-dark-800" style={{ fontFamily: "var(--font-outfit)" }}>
                 Photo Intelligence
               </span>
             </Link>
