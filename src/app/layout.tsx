@@ -56,6 +56,12 @@ export default function RootLayout({
                 Overview
               </Link>
               <Link
+                href="/explorer"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-sk-text-medium transition-colors hover:bg-sk-blue-light hover:text-sk-blue"
+              >
+                Photo Explorer
+              </Link>
+              <Link
                 href="/pilot"
                 className="rounded-lg px-4 py-2 text-sm font-medium text-sk-text-medium transition-colors hover:bg-sk-blue-light hover:text-sk-blue"
               >
