@@ -241,6 +241,134 @@ export default function VisionPage() {
         </div>
       </section>
 
+      {/* ── Competitive Landscape ─────────────────────────── */}
+      <section className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
+        <h2 className="mb-2 text-xl font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
+          Competitive Landscape
+        </h2>
+        <p className="mb-6 max-w-3xl text-sm text-sk-text-medium">
+          No pool service competitor is doing photo-based equipment intelligence today.
+          The closest analog is XOi Technologies in HVAC — they raised $230M proving this exact thesis
+          in a different vertical. Here&apos;s where everyone stands.
+        </p>
+
+        {/* Direct Pool Competitors */}
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-sk-text-disabled">
+          Direct Pool Competitors
+        </h3>
+        <div className="mb-6 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-sk-gray-100 bg-gray-50/50">
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Competitor</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">AI Features</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Photo Intelligence?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { name: "Pool Brain", ai: "Route optimization, AI chlorine dosing (upcoming), Waterguru integration for remote water monitoring. Has PoolBrain.ai (industry-tuned LLM for text/knowledge).", photo: "No", photoDetail: "LLM is text-based, not photo analysis" },
+                { name: "Pooltrac", ai: "Basic — maps, messaging, chemical calculator. Legacy platform with limited modern features.", photo: "No", photoDetail: "Basic photo notes only" },
+                { name: "Pool Founder", ai: "AI route optimization, chemical dosage calculations, invoicing automation.", photo: "No", photoDetail: "No photo AI capabilities" },
+              ].map((row) => (
+                <tr key={row.name} className="border-b border-sk-gray-100">
+                  <td className="px-4 py-3 font-semibold text-sk-text">{row.name}</td>
+                  <td className="px-4 py-3 text-xs text-sk-text-medium">{row.ai}</td>
+                  <td className="px-4 py-3">
+                    <span className="inline-block rounded-full bg-sk-gray-100 px-2.5 py-0.5 text-xs font-bold text-sk-text-disabled">{row.photo}</span>
+                    <div className="mt-1 text-[10px] text-sk-text-disabled">{row.photoDetail}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* New Entrants */}
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-sk-text-disabled">
+          New AI-Native Entrants
+        </h3>
+        <div className="mb-6 rounded-lg bg-sk-sunrise-100 p-4">
+          <p className="text-sm text-sk-text">
+            New startups like <span className="font-semibold">Pool Proof</span>, <span className="font-semibold">Simple Pool</span>, and <span className="font-semibold">PoolPros.ai</span> (launched March 2026) are entering the market with AI-first approaches.
+            However, they start from <span className="font-semibold">zero data</span>. Skimmer has been in business for over 10 years and has accumulated
+            211M+ photos from 6,279 companies. <span className="font-semibold">This dataset cannot be replicated</span> — it took a decade of pool pros
+            capturing real-world service data to build. New entrants would need years of customer adoption just to begin approaching this scale.
+          </p>
+        </div>
+
+        {/* Horizontal Field Service */}
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-sk-text-disabled">
+          Horizontal Field Service Competitors
+        </h3>
+        <div className="mb-6 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-sk-gray-100 bg-gray-50/50">
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Competitor</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">AI Features</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Photo Intelligence?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { name: "ServiceTitan", ai: "Atlas AI sidekick, Field Pro with equipment recognition, AI pre-job briefs, guided troubleshooting. Publicly traded.", photo: "Partial", photoColor: "bg-amber-100 text-amber-700", photoDetail: "Field Pro mentions \"automatic equipment recognition\" but focused on HVAC/plumbing drain cameras — not photo OCR at scale on service photos" },
+                { name: "Housecall Pro", ai: "CSR AI (phone + chat answering), auto photo upload retries. 45,000+ businesses.", photo: "No", photoColor: "bg-sk-gray-100 text-sk-text-disabled", photoDetail: "Photos are documentation only — no AI analysis" },
+                { name: "Jobber", ai: "AI pricing, upsell flagging, AI marketing suite, image markup tools, Home Depot catalog integration.", photo: "No", photoColor: "bg-sk-gray-100 text-sk-text-disabled", photoDetail: "Image markup is manual annotation, not AI recognition" },
+              ].map((row) => (
+                <tr key={row.name} className="border-b border-sk-gray-100">
+                  <td className="px-4 py-3 font-semibold text-sk-text">{row.name}</td>
+                  <td className="px-4 py-3 text-xs text-sk-text-medium">{row.ai}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${row.photoColor}`}>{row.photo}</span>
+                    <div className="mt-1 text-[10px] text-sk-text-disabled">{row.photoDetail}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* XOi — The Proven Model */}
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-sk-text-disabled">
+          The Proven Model — Different Vertical
+        </h3>
+        <div className="rounded-xl border border-sk-blue-200 bg-sk-blue-light p-5">
+          <div className="flex items-start gap-4">
+            <div className="flex-1">
+              <div className="text-lg font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
+                XOi Technologies
+              </div>
+              <div className="mt-0.5 text-xs text-sk-text-medium">HVAC / Plumbing / Mechanical — $230M+ raised</div>
+              <p className="mt-3 text-sm text-sk-text-medium">
+                XOi proved this exact thesis in HVAC. Their Smart Dataplate Capture uses OCR to extract make, model, and serial
+                from a single photo — then enriches with 100+ data points including wiring diagrams, parts specs, and service bulletins.
+                They&apos;ve raised $230M on the strength of this approach.
+              </p>
+              <p className="mt-2 text-sm font-semibold text-sk-blue">
+                We&apos;re applying the same playbook to pool — with a 10-year head start on data.
+              </p>
+            </div>
+            <div className="flex-shrink-0 rounded-lg bg-white p-3 shadow-sm text-center">
+              <div className="text-2xl font-bold text-sk-blue" style={{ fontFamily: "var(--font-outfit)" }}>$230M</div>
+              <div className="text-[10px] text-sk-text-disabled">raised on this thesis</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Takeaway */}
+        <div className="mt-6 rounded-xl bg-sk-dark-900 p-5 text-white">
+          <h4 className="text-sm font-bold" style={{ fontFamily: "var(--font-outfit)" }}>Key Takeaway</h4>
+          <p className="mt-2 text-sm text-white/80">
+            No pool competitor is doing photo-based equipment intelligence. The horizontal players (ServiceTitan, Jobber, Housecall Pro)
+            are investing in AI but not in service photo analysis at scale. XOi validated the approach in HVAC.
+            This is a <span className="font-semibold text-sk-mint">first-mover opportunity</span> in pool — and we have the data to make it work.
+            With 211M+ photos and 10+ years of history, we have an asset that would take any competitor years to replicate.
+            In the age of AI, this is the best time to unlock it.
+          </p>
+        </div>
+      </section>
+
       {/* ── Bottom Line ───────────────────────────────────── */}
       <section className="rounded-2xl bg-gradient-to-br from-sk-dark-900 to-sk-blue-800 p-8 text-white">
         <h2 className="mb-3 text-2xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
