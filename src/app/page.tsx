@@ -83,10 +83,13 @@ export default function OverviewPage() {
 
         {/* Mini stat pills */}
         <div className="relative mt-8 flex flex-wrap gap-4">
+          <p className="mb-3 text-xs font-medium uppercase tracking-widest text-white/40">
+            Breakdown by source
+          </p>
           {[
-            { icon: Camera, label: "Route Stop Photos", value: fmt(PHOTO_TOTALS.allTime.routeStop), sub: "89% of all photos" },
-            { icon: Layers, label: "Work Order Photos", value: fmt(PHOTO_TOTALS.allTime.workOrder), sub: "Repair & service docs" },
-            { icon: Image, label: "Location Photos", value: fmt(PHOTO_TOTALS.allTime.location), sub: "Site documentation" },
+            { icon: Camera, label: "Route Stop Photos", value: fmt(PHOTO_TOTALS.allTime.routeStop), sub: "89% of total" },
+            { icon: Layers, label: "Work Order Photos", value: fmt(PHOTO_TOTALS.allTime.workOrder), sub: "9% of total" },
+            { icon: Image, label: "Location Photos", value: fmt(PHOTO_TOTALS.allTime.location), sub: "2% of total" },
             { icon: TrendingUp, label: "Monthly Growth", value: `~${fmt(PHOTO_TOTALS.monthlyRate)}`, sub: "new photos each month" },
           ].map((s) => (
             <div
