@@ -69,6 +69,9 @@ export default function OverviewPage() {
             <span className="ml-3 text-2xl font-normal text-white/60">
               photos
             </span>
+            <span className="ml-2 text-base font-normal text-white/40">
+              all-time
+            </span>
           </h1>
           <p className="max-w-2xl text-lg text-white/70">
             Field service photos captured by pool technicians across{" "}
