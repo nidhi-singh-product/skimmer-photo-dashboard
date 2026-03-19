@@ -62,6 +62,12 @@ export default function RootLayout({
                 Photo Explorer
               </Link>
               <Link
+                href="/equipment"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-sk-text-medium transition-colors hover:bg-sk-blue-light hover:text-sk-blue"
+              >
+                Equipment Records
+              </Link>
+              <Link
                 href="/pilot"
                 className="rounded-lg px-4 py-2 text-sm font-medium text-sk-text-medium transition-colors hover:bg-sk-blue-light hover:text-sk-blue"
               >
