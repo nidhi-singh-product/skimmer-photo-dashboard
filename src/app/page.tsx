@@ -1,11 +1,13 @@
 "use client";
 
+import { useRef } from "react";
 import {
-  BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell,
+  BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-import { Camera, TrendingUp, Tag, Database, Image, Layers } from "lucide-react";
-import { Wrench, MapPin } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { Camera, TrendingUp, Tag, Database, Image, Layers, Wrench, MapPin } from "lucide-react";
+import { AnimatedCounter } from "@/components/counter";
 import {
   PHOTO_TOTALS, MONTHLY_TREND, LABEL_COVERAGE,
   ROUTE_STOP_CATEGORIES, WORK_ORDER_CATEGORIES, LOCATION_CATEGORIES,
@@ -23,12 +25,27 @@ function fmtFull(n: number): string {
   return n.toLocaleString();
 }
 
-const PIE_COLORS = ["#4795EC", "#3570B1", "#244B76"];
-const CATEGORY_COLORS = [
-  "#4795EC", "#256295", "#3570B1", "#6CAAF0", "#91BFF4",
-  "#FB8B24", "#FCA250", "#90CC19", "#A6D647", "#4C3779",
-  "#AEEBF3", "#B5D5F7", "#637381", "#919EAB",
-];
+/* Scroll-triggered section wrapper */
+function RevealSection({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, ease: "easeOut", delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const PIE_COLORS = ["#256295", "#4795EC", "#91BFF4"];
+const WO_COLORS = ["#FB8B24", "#FCA250", "#E07B20", "#D46A10", "#C85A00", "#B04E00", "#984200", "#803600", "#682A00", "#501E00", "#381200", "#200600", "#637381", "#919EAB", "#B7BABF"];
+const LOC_COLORS = ["#90CC19", "#A6D647", "#6C9913", "#5A8010", "#48670D", "#364E0A", "#243306", "#4795EC", "#3570B1", "#244B76", "#637381", "#919EAB"];
+const RS_COLORS = ["#256295", "#4795EC", "#3570B1", "#6CAAF0", "#91BFF4", "#FB8B24", "#FCA250", "#90CC19", "#A6D647", "#4C3779", "#AEEBF3", "#B5D5F7", "#637381", "#919EAB"];
 
 export default function OverviewPage() {
   const pieData = [
@@ -37,10 +54,8 @@ export default function OverviewPage() {
     { name: "Location", value: PHOTO_TOTALS.allTime.location, label: "Locations" },
   ];
 
-  const labeledTotal =
-    LABEL_COVERAGE.routeStop.withCaption + LABEL_COVERAGE.workOrder.withCaption;
-  const unlabeledTotal =
-    LABEL_COVERAGE.routeStop.noCaption + LABEL_COVERAGE.workOrder.noCaption;
+  const labeledTotal = LABEL_COVERAGE.routeStop.withCaption + LABEL_COVERAGE.workOrder.withCaption;
+  const unlabeledTotal = LABEL_COVERAGE.routeStop.noCaption + LABEL_COVERAGE.workOrder.noCaption;
   const labelPieData = [
     { name: "Labeled", value: labeledTotal },
     { name: "Unlabeled", value: unlabeledTotal },
@@ -52,415 +67,413 @@ export default function OverviewPage() {
   }));
 
   return (
-    <div className="space-y-10">
-      {/* ── Hero Section ─────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sk-dark-900 via-sk-dark-800 to-sk-blue-800 px-10 py-14 text-white">
-        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-sk-blue/10 blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 h-60 w-60 rounded-full bg-sk-mint/10 blur-3xl" />
-        <div className="relative">
-          <p className="mb-2 text-sm font-medium uppercase tracking-widest text-sk-mint">
-            Skimmer Photo Dataset
-          </p>
-          <h1
-            className="mb-3 text-6xl font-bold tracking-tight"
-            style={{ fontFamily: "var(--font-outfit)" }}
+    <div className="space-y-8 sm:space-y-12">
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section className="relative overflow-hidden rounded-2xl bg-sk-navy px-6 py-12 text-white sm:px-12 sm:py-20">
+        {/* Animated background orbs */}
+        <motion.div
+          className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-sk-blue/15 blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-sk-mint/12 blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.2, 0.12] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
+        <motion.div
+          className="absolute right-1/4 top-1/3 h-48 w-48 rounded-full bg-sk-sunrise/8 blur-3xl"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        />
+
+        {/* Wave SVG at bottom */}
+        <div className="absolute bottom-0 left-0 w-full">
+          <svg viewBox="0 0 1200 60" className="w-full" preserveAspectRatio="none">
+            <path d="M0 30 Q300 0 600 30 Q900 60 1200 30 L1200 60 L0 60Z" fill="#FCFCFC" fillOpacity="1" />
+          </svg>
+        </div>
+
+        <div className="relative z-10">
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-sk-mint sm:text-sm"
           >
-            {fmt(PHOTO_TOTALS.allTime.total)}
-            <span className="ml-3 text-2xl font-normal text-white/60">
-              photos
-            </span>
-            <span className="ml-2 text-base font-normal text-white/40">
-              all-time
-            </span>
-          </h1>
-          <p className="max-w-2xl text-lg text-white/70">
-            Field service photos captured by pool technicians across{" "}
-            <span className="font-semibold text-white">
-              {fmtFull(COVERAGE.companiesTotal)}
-            </span>{" "}
-            companies. Growing at{" "}
-            <span className="font-semibold text-sk-mint">
-              ~{fmt(PHOTO_TOTALS.monthlyRate)}/month
-            </span>
-            . An untapped dataset waiting for AI.
-          </p>
-        </div>
+            Skimmer Photo Dataset
+          </motion.p>
 
-        {/* Mini stat pills */}
-        <div className="relative mt-8 flex flex-wrap gap-4">
-          <p className="mb-3 text-xs font-medium uppercase tracking-widest text-white/40">
-            Breakdown by source
-          </p>
-          {[
-            { icon: Camera, label: "Route Stop", value: fmt(PHOTO_TOTALS.allTime.routeStop), sub: "89% of total" },
-            { icon: Layers, label: "Work Order", value: fmt(PHOTO_TOTALS.allTime.workOrder), sub: "9% of total" },
-            { icon: Image, label: "Location", value: fmt(PHOTO_TOTALS.allTime.location), sub: "2% of total" },
-            { icon: TrendingUp, label: "Growth", value: `~${fmt(PHOTO_TOTALS.monthlyRate)}`, sub: "new photos/month" },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-sm"
+          {/* The big number */}
+          <div className="mb-4">
+            <span
+              className="text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl"
+              style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.03em" }}
             >
-              <s.icon className="h-5 w-5 text-sk-mint" />
-              <div>
-                <div className="text-xs font-medium text-sk-mint">{s.label}</div>
-                <div className="text-xl font-bold">{s.value}</div>
-                <div className="text-xs text-white/50">{s.sub}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+              <AnimatedCounter end={211.7} decimals={1} duration={2500} className="" />
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                transition={{ delay: 2, duration: 0.5 }}
+                className="text-3xl font-light text-white/70 sm:text-5xl lg:text-6xl"
+              >
+                M
+              </motion.span>
+            </span>
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.2, duration: 0.4 }}
+              className="ml-2 inline-block text-sm font-normal text-white/40 sm:ml-3 sm:text-lg"
+            >
+              photos &middot; all-time
+            </motion.span>
+          </div>
 
-      {/* ── Key Metrics Row ──────────────────────────────── */}
-      <section className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 text-sm font-medium text-sk-text-medium">
-            <Database className="h-4 w-4" /> Companies Uploading Photos
-          </div>
-          <div className="mt-2 text-3xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-            {fmtFull(PHOTO_TOTALS.companiesUploading.routeStop)}
-          </div>
-          <div className="mt-1 text-sm text-sk-text-disabled">
-            {((PHOTO_TOTALS.companiesUploading.routeStop / COVERAGE.companiesTotal) * 100).toFixed(0)}% of all companies
-          </div>
-        </div>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg sm:leading-relaxed"
+          >
+            Field service photos captured by pool technicians across{" "}
+            <span className="font-semibold text-white/90">{fmtFull(COVERAGE.companiesTotal)}</span>{" "}
+            companies. Growing at{" "}
+            <span className="font-semibold text-sk-mint">~{fmt(PHOTO_TOTALS.monthlyRate)}/month</span>.
+            An untapped dataset waiting for AI.
+          </motion.p>
 
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 text-sm font-medium text-sk-text-medium">
-            <Camera className="h-4 w-4" /> Avg Photos per Route Stop
-          </div>
-          <div className="mt-2 text-3xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-            {PHOTO_TOTALS.avgPerEntity.routeStop}
-          </div>
-          <div className="mt-1 text-sm text-sk-text-disabled">
-            {PHOTO_TOTALS.avgPerEntity.workOrder} per work order
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 text-sm font-medium text-sk-text-medium">
-            <Image className="h-4 w-4" /> Service Locations with Photos
-          </div>
-          <div className="mt-2 text-3xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-            {fmt(COVERAGE.serviceLocationsWithWOPhotos)}
-          </div>
-          <div className="mt-1 text-sm text-sk-text-disabled">
-            {((COVERAGE.serviceLocationsWithWOPhotos / COVERAGE.serviceLocationsTotal) * 100).toFixed(0)}% of all service locations
-          </div>
-        </div>
-      </section>
-
-      {/* ── Monthly Growth Chart ─────────────────────────── */}
-      <section className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-1 text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-          Photos Uploaded Per Month
-        </h2>
-        <p className="mb-6 text-sm text-sk-text-medium">
-          Route stop photos — last 7 months (Mar 2026 is partial)
-        </p>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={trendData} barSize={48}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" />
-            <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#637381" }} />
-            <YAxis
-              tick={{ fontSize: 12, fill: "#637381" }}
-              tickFormatter={(v) => `${v}M`}
-            />
-            <Tooltip
-              formatter={(value) => [`${Number(value).toFixed(2)}M photos`, "Photos"]}
-              contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }}
-            />
-            <Bar dataKey="photosM" fill="#4795EC" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="mt-4 flex justify-center gap-8 text-sm text-sk-text-medium">
-          <span>
-            <span className="font-semibold text-sk-text">
-              {fmtFull(MONTHLY_TREND.filter((m) => !m.partial).reduce((a, m) => a + m.companies, 0) / MONTHLY_TREND.filter((m) => !m.partial).length | 0)}
-            </span>{" "}
-            avg companies/month
-          </span>
-          <span>
-            <span className="font-semibold text-sk-text">
-              {fmt(MONTHLY_TREND.filter((m) => !m.partial).reduce((a, m) => a + m.photos, 0))}
-            </span>{" "}
-            photos in 6 months
-          </span>
-        </div>
-      </section>
-
-      {/* ── Labeled vs Unlabeled ──────────────────────────── */}
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Tag className="h-5 w-5 text-sk-sunrise" />
-            <h2 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-              The Label Gap
-            </h2>
-          </div>
-          <p className="mb-6 mt-1 text-sm text-sk-text-medium">
-            Last 6 months — {fmt(LABEL_COVERAGE.routeStop.total + LABEL_COVERAGE.workOrder.total)} photos analyzed
-          </p>
-          <div className="flex items-center gap-8">
-            <ResponsiveContainer width={180} height={180}>
-              <PieChart>
-                <Pie
-                  data={labelPieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  dataKey="value"
-                  strokeWidth={0}
+          {/* Source breakdown pills */}
+          <div className="mt-8 sm:mt-10">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-white/30 sm:text-xs"
+            >
+              Breakdown by source
+            </motion.p>
+            <div className="grid grid-cols-2 gap-2.5 sm:flex sm:gap-3">
+              {[
+                { icon: Camera, label: "Route Stop", value: fmt(PHOTO_TOTALS.allTime.routeStop), sub: "89%", accent: "border-sk-blue/30" },
+                { icon: Layers, label: "Work Order", value: fmt(PHOTO_TOTALS.allTime.workOrder), sub: "9%", accent: "border-sk-sunrise/30" },
+                { icon: Image, label: "Location", value: fmt(PHOTO_TOTALS.allTime.location), sub: "2%", accent: "border-sk-moss/30" },
+                { icon: TrendingUp, label: "Growth", value: `~${fmt(PHOTO_TOTALS.monthlyRate)}`, sub: "/month", accent: "border-sk-mint/30" },
+              ].map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.4 + i * 0.12, duration: 0.4 }}
+                  className={`rounded-xl border ${s.accent} bg-white/[0.04] px-3 py-2.5 backdrop-blur-sm sm:px-5 sm:py-3`}
                 >
-                  <Cell fill="#4795EC" />
-                  <Cell fill="#E9EAEB" />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="space-y-4">
-              <div>
-                <div className="text-3xl font-bold text-sk-blue" style={{ fontFamily: "var(--font-outfit)" }}>
-                  ~80%
-                </div>
-                <div className="text-sm text-sk-text-medium">
-                  of photos have <span className="font-semibold text-sk-text">no caption or label</span>
-                </div>
-              </div>
-              <div className="rounded-lg bg-sk-sunrise-100 px-4 py-3">
-                <div className="text-sm font-medium text-sk-sunrise">
-                  {fmt(unlabeledTotal)} unlabeled photos
-                </div>
-                <div className="mt-0.5 text-xs text-sk-text-medium">
-                  Sitting in storage with zero metadata — this is the mining opportunity
-                </div>
-              </div>
-              <div className="rounded-lg bg-sk-blue-light px-4 py-3">
-                <div className="text-sm font-medium text-sk-blue">
-                  {fmt(labeledTotal)} labeled photos
-                </div>
-                <div className="mt-0.5 text-xs text-sk-text-medium">
-                  From checklist items — serves as AI training data
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Photo Source Breakdown */}
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <h2 className="mb-1 text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-            Photo Sources — All Time
-          </h2>
-          <p className="mb-6 text-sm text-sk-text-medium">
-            {fmt(PHOTO_TOTALS.allTime.total)} total photos across 3 sources
-          </p>
-          <div className="flex items-center gap-8">
-            <ResponsiveContainer width={180} height={180}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  dataKey="value"
-                  strokeWidth={0}
-                >
-                  {pieData.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="space-y-3">
-              {pieData.map((d, i) => (
-                <div key={d.name} className="flex items-center gap-3">
-                  <div
-                    className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: PIE_COLORS[i] }}
-                  />
-                  <div>
-                    <div className="text-sm font-semibold">{d.label}</div>
-                    <div className="text-xs text-sk-text-medium">
-                      {fmt(d.value)} ({((d.value / PHOTO_TOTALS.allTime.total) * 100).toFixed(1)}%)
-                    </div>
+                  <div className="flex items-center gap-1.5">
+                    <s.icon className="hidden h-3.5 w-3.5 text-white/40 sm:block" />
+                    <span className="text-[10px] font-medium text-white/50 sm:text-xs">{s.label}</span>
                   </div>
-                </div>
+                  <div className="mt-0.5 text-lg font-bold sm:text-xl">{s.value}</div>
+                  <div className="text-[10px] text-white/35 sm:text-xs">{s.sub}</div>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── What Are Techs Photographing? ────────────────── */}
-      <section className="space-y-6">
-        <div>
-          <h2 className="text-xl font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
-            What Are Techs Photographing?
-          </h2>
-          <p className="mt-1 text-sm text-sk-text-medium">
-            Each photo source tells a different story. Route stops are routine verification, work orders are service documentation, and location photos are equipment inventory.
-          </p>
-        </div>
+      {/* ── Key Metrics ──────────────────────────────────── */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
+        {[
+          {
+            icon: Database, label: "Companies Uploading Photos",
+            value: PHOTO_TOTALS.companiesUploading.routeStop,
+            sub: `${((PHOTO_TOTALS.companiesUploading.routeStop / COVERAGE.companiesTotal) * 100).toFixed(0)}% of all companies`,
+            accent: "border-l-sk-dark",
+          },
+          {
+            icon: Camera, label: "Avg Photos per Route Stop",
+            value: PHOTO_TOTALS.avgPerEntity.routeStop,
+            sub: `${PHOTO_TOTALS.avgPerEntity.workOrder} per work order`,
+            accent: "border-l-sk-blue",
+          },
+          {
+            icon: Image, label: "Service Locations with Photos",
+            value: COVERAGE.serviceLocationsWithWOPhotos,
+            sub: `${((COVERAGE.serviceLocationsWithWOPhotos / COVERAGE.serviceLocationsTotal) * 100).toFixed(0)}% of all service locations`,
+            accent: "border-l-sk-sunrise",
+          },
+        ].map((m, i) => (
+          <RevealSection key={m.label} delay={i * 0.1}>
+            <div className={`group rounded-xl border border-sk-gray-100 border-l-4 ${m.accent} bg-white p-5 shadow-sm transition-all hover:shadow-md sm:p-6`}>
+              <div className="flex items-center gap-2 text-xs font-medium text-sk-text-medium sm:text-sm">
+                <m.icon className="h-4 w-4" /> {m.label}
+              </div>
+              <div className="mt-2 text-2xl font-bold sm:text-3xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+                {typeof m.value === "number" && m.value > 100
+                  ? <AnimatedCounter end={m.value} duration={1500} />
+                  : m.value}
+              </div>
+              <div className="mt-1 text-xs text-sk-text-disabled sm:text-sm">{m.sub}</div>
+            </div>
+          </RevealSection>
+        ))}
+      </section>
 
-        {/* Route Stop Photos */}
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="mb-1 flex items-center gap-2">
-            <Camera className="h-5 w-5 text-sk-blue" />
-            <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-              Route Stop Photos
-            </h3>
-            <span className="rounded-full bg-sk-blue-light px-2.5 py-0.5 text-xs font-medium text-sk-blue">
-              Routine Verification
-            </span>
-          </div>
-          <p className="mb-5 text-sm text-sk-text-medium">
-            {fmt(LABEL_COVERAGE.routeStop.withCaption)} captioned photos (last 6 months) — mostly checklist-driven proof-of-work
+      {/* ── Monthly Growth ───────────────────────────────── */}
+      <RevealSection>
+        <section className="rounded-xl border border-sk-gray-100 bg-white p-4 shadow-sm sm:p-6">
+          <h2 className="mb-1 text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            Photos Uploaded Per Month
+          </h2>
+          <p className="mb-4 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+            Route stop photos — last 7 months (Mar 2026 is partial)
           </p>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={ROUTE_STOP_CATEGORIES} layout="vertical" margin={{ left: 170 }} barSize={18}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
-              <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
-              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: "#212B36" }} width={165} />
-              <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }} />
-              <Bar dataKey="count" fill="#4795EC" radius={[0, 6, 6, 0]}>
-                {ROUTE_STOP_CATEGORIES.map((_, i) => (
-                  <Cell key={i} fill={CATEGORY_COLORS[i % CATEGORY_COLORS.length]} />
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={trendData} barSize={36}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#637381" }} />
+              <YAxis tick={{ fontSize: 11, fill: "#637381" }} tickFormatter={(v) => `${v}M`} />
+              <Tooltip
+                formatter={(value) => [`${Number(value).toFixed(2)}M photos`, "Photos"]}
+                contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB", fontSize: 13 }}
+              />
+              <Bar dataKey="photosM" radius={[6, 6, 0, 0]}>
+                {trendData.map((_, i) => (
+                  <Cell key={i} fill={i === trendData.length - 1 ? "#91BFF4" : "#256295"} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </section>
+      </RevealSection>
 
-        {/* Work Order Photos */}
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="mb-1 flex items-center gap-2">
-            <Wrench className="h-5 w-5 text-sk-sunrise" />
-            <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-              Work Order Photos
-            </h3>
-            <span className="rounded-full bg-sk-sunrise-100 px-2.5 py-0.5 text-xs font-medium text-sk-sunrise">
-              Service Documentation
-            </span>
+      {/* ── Label Gap + Sources ───────────────────────────── */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <RevealSection>
+          <div className="h-full rounded-xl border border-sk-gray-100 bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sk-sunrise-100">
+                <Tag className="h-4 w-4 text-sk-sunrise" />
+              </div>
+              <h2 className="text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+                The Label Gap
+              </h2>
+            </div>
+            <p className="mb-4 mt-2 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+              Last 6 months — {fmt(LABEL_COVERAGE.routeStop.total + LABEL_COVERAGE.workOrder.total)} photos
+            </p>
+            <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
+              <div className="relative">
+                <ResponsiveContainer width={160} height={160}>
+                  <PieChart>
+                    <Pie data={labelPieData} cx="50%" cy="50%" innerRadius={52} outerRadius={74} dataKey="value" strokeWidth={0}>
+                      <Cell fill="#256295" />
+                      <Cell fill="#E9EAEB" />
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xl font-bold text-sk-dark" style={{ fontFamily: "var(--font-outfit)" }}>80%</span>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="rounded-lg border-l-4 border-l-sk-sunrise bg-sk-sunrise-100 px-3 py-2.5 sm:px-4 sm:py-3">
+                  <div className="text-sm font-bold text-sk-sunrise">{fmt(unlabeledTotal)}</div>
+                  <div className="text-[10px] text-sk-text-medium sm:text-xs">Unlabeled — the mining opportunity</div>
+                </div>
+                <div className="rounded-lg border-l-4 border-l-sk-dark bg-sk-blue-100 px-3 py-2.5 sm:px-4 sm:py-3">
+                  <div className="text-sm font-bold text-sk-dark">{fmt(labeledTotal)}</div>
+                  <div className="text-[10px] text-sk-text-medium sm:text-xs">Labeled — AI training data from checklists</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="mb-5 text-sm text-sk-text-medium">
-            {fmt(WORK_ORDER_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned photos (last 6 months) — before/after pairs, repairs, equipment details, damage documentation
-          </p>
-          <div className="mb-5 rounded-lg bg-sk-sunrise-100 px-4 py-2.5 text-xs text-sk-text-medium">
-            <span className="font-semibold text-sk-sunrise">Note on &ldquo;Other&rdquo; (38%):</span> These are photos with detailed freeform captions that don&apos;t match specific keywords — e.g., &ldquo;Verify valves are set properly and rotating&rdquo;, &ldquo;If applicable, verify PVB valve is on and autofill is at correct level&rdquo;, &ldquo;Thank you!&rdquo;, &ldquo;Notify office in group chat so we can schedule a green to clean.&rdquo; AI classification would categorize these by analyzing the actual photo, not the caption text.
-          </div>
-          <ResponsiveContainer width="100%" height={440}>
-            <BarChart data={WORK_ORDER_CATEGORIES} layout="vertical" margin={{ left: 190 }} barSize={18}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
-              <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
-              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: "#212B36" }} width={185} />
-              <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }} />
-              <Bar dataKey="count" fill="#FB8B24" radius={[0, 6, 6, 0]}>
-                {WORK_ORDER_CATEGORIES.map((_, i) => {
-                  const colors = ["#FB8B24", "#FCA250", "#E07B20", "#D46A10", "#C85A00", "#B04E00", "#984200", "#803600", "#682A00", "#501E00", "#381200", "#200600", "#637381", "#919EAB", "#B7BABF"];
-                  return <Cell key={i} fill={colors[i % colors.length]} />;
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        </RevealSection>
 
-        {/* Location Photos */}
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <div className="mb-1 flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-sk-moss-700" />
-            <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-              Location Photos
-            </h3>
-            <span className="rounded-full bg-sk-moss-100 px-2.5 py-0.5 text-xs font-medium text-sk-moss-700">
-              Equipment Inventory
-            </span>
+        <RevealSection delay={0.15}>
+          <div className="h-full rounded-xl border border-sk-gray-100 bg-white p-5 shadow-sm sm:p-6">
+            <h2 className="mb-1 text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+              Photo Sources — All Time
+            </h2>
+            <p className="mb-4 mt-1 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+              {fmt(PHOTO_TOTALS.allTime.total)} total across 3 sources
+            </p>
+            <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
+              <ResponsiveContainer width={160} height={160}>
+                <PieChart>
+                  <Pie data={pieData} cx="50%" cy="50%" innerRadius={52} outerRadius={74} dataKey="value" strokeWidth={2} stroke="#fff">
+                    {pieData.map((_, i) => (<Cell key={i} fill={PIE_COLORS[i]} />))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-3">
+                {pieData.map((d, i) => (
+                  <div key={d.name} className="flex items-center gap-3">
+                    <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: PIE_COLORS[i] }} />
+                    <div>
+                      <div className="text-xs font-semibold text-sk-text sm:text-sm">{d.label}</div>
+                      <div className="text-[10px] text-sk-text-medium sm:text-xs">
+                        {fmt(d.value)} ({((d.value / PHOTO_TOTALS.allTime.total) * 100).toFixed(1)}%)
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <p className="mb-5 text-sm text-sk-text-medium">
-            {fmt(LOCATION_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned photos (all time) — what&apos;s installed at each service location: pumps, filters, heaters, salt cells
-          </p>
-          <div className="mb-5 rounded-lg bg-sk-moss-100 px-4 py-2.5 text-xs text-sk-text-medium">
-            <span className="font-semibold text-sk-moss-700">Note on &ldquo;Other&rdquo; (54%):</span> Location photos have the lowest caption rate (8%). Many &ldquo;Other&rdquo; captions are property-specific notes like &ldquo;ENTER RIGHT&rdquo;, &ldquo;backyard&rdquo;, &ldquo;front of house&rdquo;, or custom site descriptions. These photos likely still show equipment or pool areas — AI vision would classify them by what&apos;s in the image regardless of the caption.
-          </div>
-          <ResponsiveContainer width="100%" height={360}>
-            <BarChart data={LOCATION_CATEGORIES} layout="vertical" margin={{ left: 175 }} barSize={18}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
-              <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
-              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: "#212B36" }} width={170} />
-              <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }} />
-              <Bar dataKey="count" fill="#90CC19" radius={[0, 6, 6, 0]}>
-                {LOCATION_CATEGORIES.map((_, i) => {
-                  const colors = ["#90CC19", "#A6D647", "#6C9913", "#5A8010", "#48670D", "#364E0A", "#243306", "#4795EC", "#3570B1", "#244B76", "#637381", "#919EAB"];
-                  return <Cell key={i} fill={colors[i % colors.length]} />;
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        </RevealSection>
+      </div>
 
-        {/* Insight callout */}
-        <div className="rounded-xl bg-sk-blue-light p-5">
-          <h4 className="text-sm font-bold text-sk-dark-800" style={{ fontFamily: "var(--font-outfit)" }}>
-            Why This Matters
-          </h4>
-          <p className="mt-1 text-sm text-sk-text-medium">
-            Each source requires a different AI approach.
-            <strong> Route stop photos</strong> are best for quality scoring and compliance verification (was the basket cleaned? was the gate closed?).
-            <strong> Work order photos</strong> are best for equipment OCR, damage detection, and before/after comparison.
-            <strong> Location photos</strong> are the richest source for building equipment inventory — they&apos;re literally documenting what&apos;s installed at each site.
-          </p>
-        </div>
+      {/* ── Category Charts ──────────────────────────────── */}
+      <section className="space-y-5 sm:space-y-6">
+        <RevealSection>
+          <div>
+            <h2 className="text-lg font-bold text-sk-dark-900 sm:text-xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+              What Are Techs Photographing?
+            </h2>
+            <p className="mt-1 text-xs text-sk-text-medium sm:text-sm">
+              Each source tells a different story — routine verification, service documentation, and equipment inventory.
+            </p>
+          </div>
+        </RevealSection>
+
+        {/* Route Stop */}
+        <RevealSection>
+          <div className="rounded-xl border border-sk-gray-100 bg-white p-4 shadow-sm sm:p-6">
+            <div className="mb-1 flex flex-wrap items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sk-blue-100">
+                <Camera className="h-4 w-4 text-sk-blue" />
+              </div>
+              <h3 className="text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)" }}>Route Stop Photos</h3>
+              <span className="rounded-full bg-sk-blue-100 px-2.5 py-0.5 text-[10px] font-semibold text-sk-dark sm:text-xs">Routine Verification</span>
+            </div>
+            <p className="mb-4 text-xs text-sk-text-medium sm:mb-5 sm:text-sm">
+              {fmt(LABEL_COVERAGE.routeStop.withCaption)} captioned — checklist-driven proof-of-work
+            </p>
+            <ResponsiveContainer width="100%" height={380}>
+              <BarChart data={ROUTE_STOP_CATEGORIES} layout="vertical" margin={{ left: 120, right: 10 }} barSize={14}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
+                <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 10, fill: "#637381" }} />
+                <YAxis type="category" dataKey="category" tick={{ fontSize: 11, fill: "#212B36" }} width={115} />
+                <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB", fontSize: 12 }} />
+                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                  {ROUTE_STOP_CATEGORIES.map((_, i) => (<Cell key={i} fill={RS_COLORS[i % RS_COLORS.length]} />))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </RevealSection>
+
+        {/* Work Order */}
+        <RevealSection>
+          <div className="rounded-xl border border-sk-gray-100 bg-white p-4 shadow-sm sm:p-6">
+            <div className="mb-1 flex flex-wrap items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sk-sunrise-100">
+                <Wrench className="h-4 w-4 text-sk-sunrise" />
+              </div>
+              <h3 className="text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)" }}>Work Order Photos</h3>
+              <span className="rounded-full bg-sk-sunrise-100 px-2.5 py-0.5 text-[10px] font-semibold text-sk-sunrise sm:text-xs">Service Documentation</span>
+            </div>
+            <p className="mb-2 text-xs text-sk-text-medium sm:text-sm">
+              {fmt(WORK_ORDER_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned — repairs, equipment, damage
+            </p>
+            <div className="mb-4 rounded-lg border-l-4 border-l-sk-sunrise bg-sk-sunrise-100/50 px-3 py-2 text-[10px] text-sk-text-medium sm:px-4 sm:py-2.5 sm:text-xs">
+              <span className="font-semibold text-sk-sunrise">&ldquo;Other&rdquo; (38%):</span> Freeform captions — equipment verification instructions, scheduling notes, acknowledgments. AI would classify these by the actual photo.
+            </div>
+            <ResponsiveContainer width="100%" height={420}>
+              <BarChart data={WORK_ORDER_CATEGORIES} layout="vertical" margin={{ left: 140, right: 10 }} barSize={14}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
+                <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 10, fill: "#637381" }} />
+                <YAxis type="category" dataKey="category" tick={{ fontSize: 11, fill: "#212B36" }} width={135} />
+                <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB", fontSize: 12 }} />
+                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                  {WORK_ORDER_CATEGORIES.map((_, i) => (<Cell key={i} fill={WO_COLORS[i % WO_COLORS.length]} />))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </RevealSection>
+
+        {/* Location */}
+        <RevealSection>
+          <div className="rounded-xl border border-sk-gray-100 bg-white p-4 shadow-sm sm:p-6">
+            <div className="mb-1 flex flex-wrap items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sk-moss-100">
+                <MapPin className="h-4 w-4 text-sk-moss-700" />
+              </div>
+              <h3 className="text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)" }}>Location Photos</h3>
+              <span className="rounded-full bg-sk-moss-100 px-2.5 py-0.5 text-[10px] font-semibold text-sk-moss-700 sm:text-xs">Equipment Inventory</span>
+            </div>
+            <p className="mb-2 text-xs text-sk-text-medium sm:text-sm">
+              {fmt(LOCATION_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned — what&apos;s installed at each site
+            </p>
+            <div className="mb-4 rounded-lg border-l-4 border-l-sk-moss-700 bg-sk-moss-100/50 px-3 py-2 text-[10px] text-sk-text-medium sm:px-4 sm:py-2.5 sm:text-xs">
+              <span className="font-semibold text-sk-moss-700">&ldquo;Other&rdquo; (54%):</span> Property notes like &ldquo;ENTER RIGHT&rdquo;, &ldquo;backyard&rdquo;, site descriptions. These likely still show equipment — AI would classify by the image.
+            </div>
+            <ResponsiveContainer width="100%" height={340}>
+              <BarChart data={LOCATION_CATEGORIES} layout="vertical" margin={{ left: 130, right: 10 }} barSize={14}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
+                <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 10, fill: "#637381" }} />
+                <YAxis type="category" dataKey="category" tick={{ fontSize: 11, fill: "#212B36" }} width={125} />
+                <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB", fontSize: 12 }} />
+                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                  {LOCATION_CATEGORIES.map((_, i) => (<Cell key={i} fill={LOC_COLORS[i % LOC_COLORS.length]} />))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </RevealSection>
+
+        {/* Insight */}
+        <RevealSection>
+          <div className="rounded-xl border border-sk-dark-200 bg-gradient-to-r from-sk-blue-100 via-white to-sk-mint-100 p-4 sm:p-5">
+            <h4 className="text-xs font-bold text-sk-dark-800 sm:text-sm" style={{ fontFamily: "var(--font-outfit)" }}>
+              Each Source → Different AI Approach
+            </h4>
+            <p className="mt-1.5 text-[10px] leading-relaxed text-sk-text-medium sm:text-sm">
+              <strong>Route stops</strong> → quality scoring &amp; compliance.{" "}
+              <strong>Work orders</strong> → equipment OCR, damage detection, before/after.{" "}
+              <strong>Location photos</strong> → building equipment inventory per service location.
+            </p>
+          </div>
+        </RevealSection>
       </section>
 
-      {/* ── The Opportunity Callout ───────────────────────── */}
-      <section className="rounded-2xl bg-gradient-to-r from-sk-blue-light via-white to-sk-moss-100 p-8">
-        <h2
-          className="mb-3 text-2xl font-bold text-sk-dark-900"
-          style={{ fontFamily: "var(--font-outfit)" }}
-        >
-          The Opportunity
-        </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-xl bg-white p-5 shadow-sm">
-            <div className="text-3xl font-bold text-sk-blue" style={{ fontFamily: "var(--font-outfit)" }}>
-              {fmt(COVERAGE.serviceLocationsWithEquipmentPhotos)}
-            </div>
-            <div className="mt-1 text-sm font-medium text-sk-text">
-              Service locations with equipment photos
-            </div>
-            <div className="mt-2 text-xs text-sk-text-medium">
-              Ready for OCR extraction — brand, model, serial number from existing dataplate photos
-            </div>
+      {/* ── Opportunity ──────────────────────────────────── */}
+      <RevealSection>
+        <section className="overflow-hidden rounded-2xl bg-sk-navy p-6 text-white sm:p-10">
+          <h2
+            className="mb-6 text-lg font-bold sm:text-2xl"
+            style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}
+          >
+            The Opportunity
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+            {[
+              { value: COVERAGE.serviceLocationsWithEquipmentPhotos, suffix: "", label: "Service locations with equipment photos", sub: "Ready for OCR — brand, model, serial from existing dataplates", accent: "border-t-sk-blue" },
+              { value: 7556, suffix: "", label: "Photos with model/serial captions", sub: "Techs already photograph dataplates — AI just needs to read them", accent: "border-t-sk-sunrise" },
+              { value: 128470, suffix: "", label: "Pressure gauge photos", sub: "AI can read PSI and build filter pressure trends over time", accent: "border-t-sk-moss" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.5 }}
+                className={`rounded-xl border-t-4 ${item.accent} bg-white/[0.06] p-4 backdrop-blur-sm sm:p-5`}
+              >
+                <div className="text-2xl font-bold text-white sm:text-3xl" style={{ fontFamily: "var(--font-outfit)" }}>
+                  <AnimatedCounter end={item.value} duration={1800} />
+                </div>
+                <div className="mt-1 text-xs font-medium text-white/80 sm:text-sm">{item.label}</div>
+                <div className="mt-1.5 text-[10px] text-white/45 sm:text-xs">{item.sub}</div>
+              </motion.div>
+            ))}
           </div>
-          <div className="rounded-xl bg-white p-5 shadow-sm">
-            <div className="text-3xl font-bold text-sk-sunrise" style={{ fontFamily: "var(--font-outfit)" }}>
-              7,556
-            </div>
-            <div className="mt-1 text-sm font-medium text-sk-text">
-              Photos with model/serial captions
-            </div>
-            <div className="mt-2 text-xs text-sk-text-medium">
-              Techs are already photographing dataplates — we just need AI to read them
-            </div>
-          </div>
-          <div className="rounded-xl bg-white p-5 shadow-sm">
-            <div className="text-3xl font-bold text-sk-moss-700" style={{ fontFamily: "var(--font-outfit)" }}>
-              128K
-            </div>
-            <div className="mt-1 text-sm font-medium text-sk-text">
-              Pressure gauge photos
-            </div>
-            <div className="mt-2 text-xs text-sk-text-medium">
-              AI can read PSI values and build filter pressure trends over time
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </RevealSection>
 
       {/* Footer */}
-      <footer className="border-t border-sk-gray-100 pt-6 text-center text-xs text-sk-text-disabled">
+      <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">
         Skimmer Photo Intelligence — Data sourced from skimmer-prod_db, March 2026
       </footer>
     </div>

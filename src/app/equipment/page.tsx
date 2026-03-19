@@ -1,22 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
-  CheckCircle2, AlertTriangle, Cpu, Wrench, TrendingUp,
+  CheckCircle2, Cpu, Wrench, TrendingUp,
   ShieldCheck, DollarSign, Package, Clock, FileText, Zap, Target,
+  ChevronLeft, ChevronRight,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/counter";
 import {
   EQUIPMENT_EXTRACTIONS, EXTRACTION_STATS, MOCK_PROFILES,
 } from "@/lib/equipment-data";
 
+/* Scroll reveal */
+function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  return (
+    <motion.div ref={ref} initial={{ opacity: 0, y: 25 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, ease: "easeOut", delay }} className={className}>
+      {children}
+    </motion.div>
+  );
+}
+
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, string> = {
-    Good: "bg-sk-moss-100 text-sk-moss-700",
-    Aging: "bg-amber-100 text-amber-700",
-    "Replace Soon": "bg-red-100 text-red-700",
+    Good: "bg-sk-moss-100 text-sk-moss-700 border-sk-moss-700/20",
+    Aging: "bg-amber-50 text-amber-700 border-amber-200",
+    "Replace Soon": "bg-red-50 text-red-700 border-red-200",
   };
   return (
-    <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${config[status] || "bg-gray-100 text-gray-600"}`}>
+    <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold sm:text-xs ${config[status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
       {status}
     </span>
   );
@@ -38,320 +52,298 @@ export default function EquipmentPage() {
 
   const profile = MOCK_PROFILES[0];
 
+  const goPrev = () => setSelectedIdx((i) => Math.max(0, i - 1));
+  const goNext = () => setSelectedIdx((i) => Math.min(EQUIPMENT_EXTRACTIONS.length - 1, i + 1));
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 sm:space-y-12">
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sk-dark-900 via-sk-blue-800 to-sk-dark-800 px-10 py-12 text-white">
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-sk-moss/10 blur-3xl" />
-        <div className="absolute -bottom-8 -left-8 h-48 w-48 rounded-full bg-sk-sunrise/10 blur-3xl" />
-        <div className="relative">
-          <p className="mb-2 text-sm font-medium uppercase tracking-widest text-sk-moss">
+      <section className="relative overflow-hidden rounded-2xl bg-sk-navy px-6 py-10 text-white sm:px-12 sm:py-16">
+        <motion.div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-sk-moss/12 blur-3xl" animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 7, repeat: Infinity }} />
+        <motion.div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-sk-sunrise/10 blur-3xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 9, repeat: Infinity, delay: 3 }} />
+
+        <div className="absolute bottom-0 left-0 w-full">
+          <svg viewBox="0 0 1200 50" className="w-full" preserveAspectRatio="none">
+            <path d="M0 25 Q300 0 600 25 Q900 50 1200 25 L1200 50 L0 50Z" fill="#FCFCFC" />
+          </svg>
+        </div>
+
+        <div className="relative z-10">
+          <motion.p initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
+            className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-sk-moss-500 sm:text-sm">
             Equipment Intelligence
-          </p>
-          <h1 className="mb-3 text-4xl font-bold tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>
+          </motion.p>
+          <motion.h1 initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
+            className="mb-3 text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.03em" }}>
             From Photo to Equipment Record
-          </h1>
-          <p className="max-w-2xl text-lg text-white/70">
-            Techs are already photographing equipment dataplates. AI reads them in seconds —
-            brand, model, serial number, manufacture date — and links them to the service location.
-            No new behavior required.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-4">
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
+            className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg">
+            Techs already photograph dataplates. AI reads them in seconds — brand, model, serial, manufacture date — and links them to the service location. No new behavior required.
+          </motion.p>
+
+          <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:gap-3">
             {[
-              { value: "112,780", label: "Service locations with equipment photos" },
-              { value: "7,556", label: "Photos explicitly captioned \"model/serial\"" },
-              { value: "10/10", label: "Successful extractions in today's test" },
-              { value: "$0.08", label: "Total cost for 10 extractions" },
-            ].map((s) => (
-              <div key={s.label} className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-sm">
-                <div className="text-xl font-bold">{s.value}</div>
-                <div className="text-xs text-white/50">{s.label}</div>
-              </div>
+              { value: "112,780", label: "Locations with equipment photos" },
+              { value: "7,556", label: "Dataplate photos found" },
+              { value: "14/14", label: "Successful extractions" },
+              { value: "$0.12", label: "Total extraction cost" },
+            ].map((s, i) => (
+              <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }}
+                className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 backdrop-blur-sm sm:px-5 sm:py-3">
+                <div className="text-base font-bold sm:text-xl">{s.value}</div>
+                <div className="text-[10px] text-white/45 sm:text-xs">{s.label}</div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Live Extractions ──────────────────────────────── */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
-            Real Extractions — Run Today
-          </h2>
-          <p className="mt-1 text-sm text-sk-text-medium">
-            {EXTRACTION_STATS.photosProcessed} dataplate photos from production, processed through GPT-4o Vision on {EXTRACTION_STATS.dateRun}.
-            {" "}{EXTRACTION_STATS.successRate} success rate. Total cost: {EXTRACTION_STATS.apiCost}.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Photo side */}
-          <div className="space-y-4">
-            <div className="overflow-hidden rounded-xl border border-sk-gray-100 bg-white shadow-sm">
-              <div className="relative aspect-[4/3] bg-sk-gray-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={selected.photoUrl}
-                  alt={selected.caption}
-                  className="h-full w-full object-contain"
-                />
-                <div className="absolute bottom-3 left-3 rounded-lg bg-black/70 px-3 py-1.5 text-xs text-white backdrop-blur-sm">
-                  Tech caption: &ldquo;{selected.caption}&rdquo;
-                </div>
-              </div>
-              <div className="border-t border-sk-gray-100 px-4 py-3">
-                <div className="text-xs text-sk-text-medium">{selected.company}</div>
-              </div>
-            </div>
-
-            {/* Thumbnail selector */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {EQUIPMENT_EXTRACTIONS.map((ext, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedIdx(i)}
-                  className={`flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
-                    i === selectedIdx ? "border-sk-blue shadow-md" : "border-transparent opacity-60 hover:opacity-100"
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={ext.photoUrl}
-                    alt={ext.caption}
-                    className="h-14 w-14 object-cover"
-                    loading="lazy"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Extracted data side */}
-          <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-                AI Extracted Data
-              </h3>
-              <span className={`rounded-full px-3 py-1 text-xs font-bold ${
-                selected.confidence === "High"
-                  ? "bg-sk-moss-100 text-sk-moss-700"
-                  : "bg-amber-100 text-amber-700"
-              }`}>
-                {selected.confidence} Confidence
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {fieldsExtracted.map((f) => (
-                <div key={f.label} className="flex items-start gap-3">
-                  {f.value ? (
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-sk-moss-700" />
-                  ) : (
-                    <div className="mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 border-sk-gray-200" />
-                  )}
-                  <div className="flex-1">
-                    <div className="text-xs font-medium uppercase tracking-wide text-sk-text-disabled">
-                      {f.label}
-                    </div>
-                    <div className={`text-sm font-semibold ${f.value ? "text-sk-text" : "text-sk-text-disabled"}`}>
-                      {f.value || "Not found"}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 rounded-lg bg-sk-blue-light p-3">
-              <div className="text-xs font-medium text-sk-blue">AI Notes</div>
-              <div className="mt-1 text-xs text-sk-text-medium">{selected.notes}</div>
-            </div>
-
-            <div className="mt-4 flex items-center gap-4 text-xs text-sk-text-disabled">
-              <span>Brands found: {EXTRACTION_STATS.uniqueBrands.join(", ")}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Why Structured Records Matter ─────────────────── */}
-      <section className="rounded-2xl bg-gradient-to-r from-sk-blue-light via-white to-sk-moss-100 p-8">
-        <h2 className="mb-2 text-2xl font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
-          Why Structured Equipment Records Matter
-        </h2>
-        <p className="mb-6 max-w-3xl text-sm text-sk-text-medium">
-          Right now, equipment data lives trapped inside photos — invisible to search, reporting, and automation.
-          A structured record turns a JPEG into actionable business intelligence.
-        </p>
-
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              icon: Clock,
-              title: "Proactive Replacement Alerts",
-              description: "Know equipment age from manufacture dates. Alert pros before a pump fails — \"This Pentair IntelliFlo is 7.2 years old, average lifespan is 8-12 years.\"",
-              value: "Reduce emergency repairs",
-            },
-            {
-              icon: Package,
-              title: "Instant Parts Lookup",
-              description: "With brand + model, auto-suggest replacement parts, compatible accessories, and supplier links. No more guessing which seal kit fits which pump.",
-              value: "Faster repair turnaround",
-            },
-            {
-              icon: FileText,
-              title: "Equipment Service History",
-              description: "Link work orders to specific equipment. \"This Hayward salt cell has had 4 cleanings in 12 months — it may need replacement.\" Track cost-per-equipment over time.",
-              value: "Data-driven service decisions",
-            },
-            {
-              icon: TrendingUp,
-              title: "Industry Intelligence",
-              description: "Aggregate equipment data across 7,400+ companies. \"62% of Arizona pools use variable-speed pumps. In Florida, only 41%.\" Valuable for manufacturer partnerships.",
-              value: "Market insights at scale",
-            },
-            {
-              icon: DollarSign,
-              title: "Upsell & Revenue Opportunities",
-              description: "Identify aging equipment across a pro's customer base. \"47 of your customers have pumps over 6 years old — here's a replacement campaign template.\"",
-              value: "New revenue for pros",
-            },
-            {
-              icon: ShieldCheck,
-              title: "Warranty & Compliance Tracking",
-              description: "Serial numbers enable warranty lookups. Safety cover certifications (ASTM F 1346) can be tracked. \"This cover's certification is from 2003 — may need reinspection.\"",
-              value: "Liability protection",
-            },
-            {
-              icon: Wrench,
-              title: "Technician Efficiency",
-              description: "Tech arrives at a stop and sees the full equipment profile before opening the gate. No more hunting for model numbers or calling the office to ask what filter is installed.",
-              value: "Faster service visits",
-            },
-            {
-              icon: Target,
-              title: "Customer Communication",
-              description: "Auto-generate equipment reports for homeowners. \"Your pool equipment summary: 4 items, all in good condition. Your heater is approaching typical replacement age.\"",
-              value: "Professional customer experience",
-            },
-            {
-              icon: Zap,
-              title: "Zero New Behavior Required",
-              description: "Techs are already taking these photos. We just need AI to read them. On-device OCR means it works offline, costs $0/month, and builds the database automatically going forward.",
-              value: "Frictionless adoption",
-            },
-          ].map((item) => (
-            <div key={item.title} className="rounded-xl bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-2">
-                <item.icon className="h-5 w-5 text-sk-blue" />
-                <h3 className="text-sm font-bold text-sk-text">{item.title}</h3>
-              </div>
-              <p className="mt-2 text-xs text-sk-text-medium leading-relaxed">{item.description}</p>
-              <div className="mt-3 text-xs font-semibold text-sk-moss-700">{item.value}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Product Vision: Equipment Profile ─────────────── */}
-      <section>
-        <h2 className="mb-2 text-2xl font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
-          Product Vision: Equipment Profile per Service Location
-        </h2>
-        <p className="mb-6 text-sm text-sk-text-medium">
-          What the equipment tab could look like in Skimmer — built entirely from photos techs already take.
-        </p>
-
-        <div className="rounded-xl border border-sk-blue-200 bg-white shadow-sm overflow-hidden">
-          {/* Mock header */}
-          <div className="border-b border-sk-gray-100 bg-sk-blue-light px-6 py-4">
-            <div className="text-xs font-medium uppercase tracking-wide text-sk-blue">Service Location</div>
-            <div className="text-lg font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
-              {profile.location}
-            </div>
-            <div className="text-sm text-sk-text-medium">{profile.customer} — {profile.equipment.length} equipment items identified</div>
-          </div>
-
-          {/* Equipment table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-sk-gray-100 bg-gray-50/50">
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Equipment</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Model</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Serial</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Age</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Avg Lifespan</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-sk-text-disabled">Work Orders</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profile.equipment.map((eq, i) => (
-                  <tr key={i} className="border-b border-sk-gray-100 last:border-0 hover:bg-sk-blue-light/30">
-                    <td className="px-6 py-4">
-                      <div className="font-semibold text-sk-text">{eq.brand} {eq.type}</div>
-                      <div className="text-xs text-sk-text-disabled">Installed {eq.installedDate}</div>
-                    </td>
-                    <td className="px-4 py-4 font-mono text-xs text-sk-text">{eq.model}</td>
-                    <td className="px-4 py-4 font-mono text-xs text-sk-text-medium">{eq.serial}</td>
-                    <td className="px-4 py-4 text-sk-text">{eq.age}</td>
-                    <td className="px-4 py-4 text-sk-text-medium">{eq.avgLifespan}</td>
-                    <td className="px-4 py-4"><StatusBadge status={eq.status} /></td>
-                    <td className="px-4 py-4 text-sk-text">{eq.workOrderCount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mock footer */}
-          <div className="border-t border-sk-gray-100 bg-gray-50/50 px-6 py-3">
-            <p className="text-xs text-sk-text-disabled">
-              Equipment data sourced from work order and route stop photos via AI OCR. Last updated from photo taken March 2026.
+      <Reveal>
+        <section>
+          <div className="mb-5 sm:mb-6">
+            <h2 className="text-xl font-bold text-sk-dark-900 sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+              Real Extractions — Run Today
+            </h2>
+            <p className="mt-1 text-xs text-sk-text-medium sm:text-sm">
+              {EXTRACTION_STATS.photosProcessed} production dataplate photos → GPT-4o Vision → {EXTRACTION_STATS.successRate} success. Cost: {EXTRACTION_STATS.apiCost}.
             </p>
           </div>
-        </div>
-      </section>
+
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
+            {/* Photo side */}
+            <div className="space-y-3">
+              <div className="overflow-hidden rounded-xl border border-sk-gray-100 bg-sk-navy/[0.03] shadow-sm">
+                <div className="relative aspect-[4/3]">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={selected.photoUrl}
+                      src={selected.photoUrl}
+                      alt={selected.caption}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="h-full w-full object-contain"
+                    />
+                  </AnimatePresence>
+                  <div className="absolute bottom-3 left-3 right-3 rounded-lg bg-sk-navy/80 px-3 py-2 backdrop-blur-md">
+                    <div className="text-[10px] text-white/50 sm:text-xs">Tech caption</div>
+                    <div className="text-xs font-medium text-white sm:text-sm">&ldquo;{selected.caption}&rdquo;</div>
+                  </div>
+
+                  {/* Nav arrows on photo */}
+                  <button onClick={goPrev} disabled={selectedIdx === 0}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-sk-text shadow-md backdrop-blur-sm transition-opacity disabled:opacity-0 hover:bg-white">
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button onClick={goNext} disabled={selectedIdx === EQUIPMENT_EXTRACTIONS.length - 1}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-sk-text shadow-md backdrop-blur-sm transition-opacity disabled:opacity-0 hover:bg-white">
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between border-t border-sk-gray-100 px-4 py-2.5">
+                  <span className="text-xs text-sk-text-medium">{selected.company}</span>
+                  <span className="text-[10px] text-sk-text-disabled">{selectedIdx + 1} of {EQUIPMENT_EXTRACTIONS.length}</span>
+                </div>
+              </div>
+
+              {/* Thumbnails */}
+              <div className="flex gap-1.5 overflow-x-auto pb-1 sm:gap-2">
+                {EQUIPMENT_EXTRACTIONS.map((ext, i) => (
+                  <button key={i} onClick={() => setSelectedIdx(i)}
+                    className={`flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
+                      i === selectedIdx ? "border-sk-blue shadow-md scale-105" : "border-transparent opacity-50 hover:opacity-80"
+                    }`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={ext.photoUrl} alt={ext.caption} className="h-12 w-12 object-cover sm:h-14 sm:w-14" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Extracted data side */}
+            <div className="rounded-xl border border-sk-gray-100 bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)" }}>
+                  AI Extracted Data
+                </h3>
+                <span className={`rounded-full border px-3 py-1 text-[10px] font-bold sm:text-xs ${
+                  selected.confidence === "High"
+                    ? "border-sk-moss-700/20 bg-sk-moss-100 text-sk-moss-700"
+                    : "border-amber-200 bg-amber-50 text-amber-700"
+                }`}>
+                  {selected.confidence} Confidence
+                </span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedIdx}
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-2.5"
+                >
+                  {fieldsExtracted.map((f, i) => (
+                    <motion.div
+                      key={f.label}
+                      initial={{ opacity: 0, x: 8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.04, duration: 0.25 }}
+                      className={`flex items-start gap-3 rounded-lg px-3 py-2 ${f.value ? "bg-sk-moss-100/40" : "bg-sk-gray-100/40"}`}
+                    >
+                      {f.value ? (
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-sk-moss-700" />
+                      ) : (
+                        <div className="mt-0.5 h-4 w-4 flex-shrink-0 rounded-full border-2 border-sk-gray-200" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:text-xs">{f.label}</div>
+                        <div className={`text-xs font-semibold sm:text-sm ${f.value ? "text-sk-text" : "text-sk-text-disabled"} truncate`}>
+                          {f.value || "Not found"}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+
+              <div className="mt-4 rounded-lg border-l-4 border-l-sk-blue bg-sk-blue-100 p-3">
+                <div className="text-[10px] font-semibold text-sk-dark sm:text-xs">AI Notes</div>
+                <div className="mt-1 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">{selected.notes}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ── Why Structured Records Matter ─────────────────── */}
+      <Reveal>
+        <section className="rounded-2xl bg-gradient-to-r from-sk-blue-100 via-white to-sk-moss-100 p-5 sm:p-8">
+          <h2 className="mb-2 text-lg font-bold text-sk-dark-900 sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            Why Structured Equipment Records Matter
+          </h2>
+          <p className="mb-4 max-w-3xl text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+            Equipment data lives trapped inside photos — invisible to search, reporting, and automation. A structured record turns a JPEG into actionable intelligence.
+          </p>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+            {[
+              { icon: Clock, title: "Proactive Replacement Alerts", description: "Know equipment age from manufacture dates. Alert before failure — \"This pump is 7.2 years old, avg lifespan 8-12 years.\"", value: "Reduce emergency repairs", accent: "border-l-sk-sunrise" },
+              { icon: Package, title: "Instant Parts Lookup", description: "Brand + model → auto-suggest replacement parts, compatible accessories, supplier links. No guessing which seal kit fits.", value: "Faster repair turnaround", accent: "border-l-sk-blue" },
+              { icon: FileText, title: "Equipment Service History", description: "Link work orders to specific equipment. \"This salt cell had 4 cleanings in 12 months — may need replacement.\"", value: "Data-driven decisions", accent: "border-l-sk-moss-700" },
+              { icon: TrendingUp, title: "Industry Intelligence", description: "Aggregate data across 7,400+ companies. \"62% of AZ pools use variable-speed pumps. In FL, only 41%.\"", value: "Market insights at scale", accent: "border-l-sk-orchid" },
+              { icon: DollarSign, title: "Upsell Opportunities", description: "\"47 of your customers have pumps over 6 years old.\" Auto-generate targeted replacement campaigns.", value: "New revenue for pros", accent: "border-l-sk-sunrise" },
+              { icon: ShieldCheck, title: "Warranty & Compliance", description: "Serial numbers enable warranty lookups. Safety certifications tracked. \"This cover cert is from 2003.\"", value: "Liability protection", accent: "border-l-sk-dark" },
+              { icon: Wrench, title: "Technician Efficiency", description: "Tech sees full equipment profile before opening the gate. No hunting for model numbers or calling the office.", value: "Faster service visits", accent: "border-l-sk-blue" },
+              { icon: Target, title: "Customer Communication", description: "Auto-generate equipment reports: \"4 items, all good. Your heater is approaching typical replacement age.\"", value: "Professional experience", accent: "border-l-sk-moss-700" },
+              { icon: Zap, title: "Zero New Behavior", description: "Techs already take these photos. On-device OCR works offline, costs $0/month, builds the database automatically.", value: "Frictionless adoption", accent: "border-l-sk-sunrise" },
+            ].map((item, i) => (
+              <Reveal key={item.title} delay={i * 0.05}>
+                <div className={`rounded-xl border-l-4 ${item.accent} bg-white p-4 shadow-sm transition-all hover:shadow-md sm:p-5`}>
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sk-blue-100">
+                      <item.icon className="h-3.5 w-3.5 text-sk-dark" />
+                    </div>
+                    <h3 className="text-xs font-bold text-sk-text sm:text-sm">{item.title}</h3>
+                  </div>
+                  <p className="mt-2 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">{item.description}</p>
+                  <div className="mt-2.5 text-[10px] font-bold text-sk-moss-700 sm:text-xs">{item.value}</div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ── Product Vision ─────────────────────────────────── */}
+      <Reveal>
+        <section>
+          <h2 className="mb-2 text-lg font-bold text-sk-dark-900 sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            Product Vision: Equipment Profile per Service Location
+          </h2>
+          <p className="mb-4 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+            What the equipment tab could look like — built entirely from photos techs already take.
+          </p>
+
+          <div className="overflow-hidden rounded-xl border border-sk-blue-200 bg-white shadow-sm">
+            <div className="border-b border-sk-gray-100 bg-sk-blue-100 px-4 py-3 sm:px-6 sm:py-4">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-sk-dark sm:text-xs">Service Location</div>
+              <div className="text-base font-bold text-sk-dark-900 sm:text-lg" style={{ fontFamily: "var(--font-outfit)" }}>{profile.location}</div>
+              <div className="text-xs text-sk-text-medium">{profile.customer} — {profile.equipment.length} items identified</div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs sm:text-sm">
+                <thead>
+                  <tr className="border-b border-sk-gray-100 bg-gray-50/50">
+                    <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:px-6 sm:text-xs">Equipment</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:px-4 sm:text-xs">Model</th>
+                    <th className="hidden px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:table-cell sm:text-xs">Serial</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:px-4 sm:text-xs">Age</th>
+                    <th className="hidden px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled md:table-cell sm:text-xs">Lifespan</th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:px-4 sm:text-xs">Status</th>
+                    <th className="hidden px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-sk-text-disabled sm:table-cell sm:text-xs">WOs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {profile.equipment.map((eq, i) => (
+                    <tr key={i} className="border-b border-sk-gray-100 last:border-0 transition-colors hover:bg-sk-blue-100/30">
+                      <td className="px-4 py-3 sm:px-6 sm:py-4">
+                        <div className="font-semibold text-sk-text">{eq.brand} {eq.type}</div>
+                        <div className="text-[10px] text-sk-text-disabled">Installed {eq.installedDate}</div>
+                      </td>
+                      <td className="px-3 py-3 font-mono text-[10px] text-sk-text sm:px-4 sm:text-xs">{eq.model}</td>
+                      <td className="hidden px-4 py-3 font-mono text-[10px] text-sk-text-medium sm:table-cell sm:text-xs">{eq.serial}</td>
+                      <td className="px-3 py-3 text-sk-text sm:px-4">{eq.age}</td>
+                      <td className="hidden px-4 py-3 text-sk-text-medium md:table-cell">{eq.avgLifespan}</td>
+                      <td className="px-3 py-3 sm:px-4"><StatusBadge status={eq.status} /></td>
+                      <td className="hidden px-4 py-3 text-sk-text sm:table-cell">{eq.workOrderCount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="border-t border-sk-gray-100 bg-gray-50/50 px-4 py-2.5 sm:px-6 sm:py-3">
+              <p className="text-[10px] text-sk-text-disabled sm:text-xs">
+                Equipment data sourced from work order and route stop photos via AI OCR. Last updated March 2026.
+              </p>
+            </div>
+          </div>
+        </section>
+      </Reveal>
 
       {/* ── Scale & Cost ─────────────────────────────────── */}
-      <section className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <Cpu className="mb-3 h-6 w-6 text-sk-blue" />
-          <div className="text-3xl font-bold text-sk-blue" style={{ fontFamily: "var(--font-outfit)" }}>
-            ~$280
+      <Reveal>
+        <section className="overflow-hidden rounded-2xl bg-sk-navy p-6 text-white sm:p-10">
+          <h2 className="mb-6 text-lg font-bold sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            Scale & Cost
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+            {[
+              { icon: Cpu, value: "~$280", label: "Process all 70K equipment photos", sub: "70,000 photos × $0.004/image → equipment records for ~100K service locations", accent: "border-t-sk-blue" },
+              { icon: DollarSign, value: "$0/mo", label: "On-device OCR for new photos", sub: "Apple Vision + Google ML Kit. Works offline. Every new dataplate auto-builds the record.", accent: "border-t-sk-moss" },
+              { icon: TrendingUp, value: "100K+", label: "Service locations covered", sub: "112,780 locations already have equipment photos. Retroactive database from existing data.", accent: "border-t-sk-sunrise" },
+            ].map((item, i) => (
+              <motion.div key={item.label} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}
+                className={`rounded-xl border-t-4 ${item.accent} bg-white/[0.06] p-4 backdrop-blur-sm sm:p-5`}>
+                <item.icon className="mb-2 h-5 w-5 text-white/50" />
+                <div className="text-2xl font-bold sm:text-3xl" style={{ fontFamily: "var(--font-outfit)" }}>{item.value}</div>
+                <div className="mt-1 text-xs font-medium text-white/80 sm:text-sm">{item.label}</div>
+                <div className="mt-1.5 text-[10px] text-white/40 sm:text-xs">{item.sub}</div>
+              </motion.div>
+            ))}
           </div>
-          <div className="mt-1 text-sm font-medium text-sk-text">Process all 70K equipment photos</div>
-          <div className="mt-2 text-xs text-sk-text-medium">
-            70,000 equipment-captioned work order photos × $0.004/image. Build equipment records for ~100K service locations.
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <DollarSign className="mb-3 h-6 w-6 text-sk-moss-700" />
-          <div className="text-3xl font-bold text-sk-moss-700" style={{ fontFamily: "var(--font-outfit)" }}>
-            $0/month
-          </div>
-          <div className="mt-1 text-sm font-medium text-sk-text">On-device OCR for new photos</div>
-          <div className="mt-2 text-xs text-sk-text-medium">
-            Apple Vision + Google ML Kit run on the phone. Works offline. Every new dataplate photo auto-builds the equipment record.
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-          <TrendingUp className="mb-3 h-6 w-6 text-sk-sunrise" />
-          <div className="text-3xl font-bold text-sk-sunrise" style={{ fontFamily: "var(--font-outfit)" }}>
-            100K+
-          </div>
-          <div className="mt-1 text-sm font-medium text-sk-text">Service locations covered</div>
-          <div className="mt-2 text-xs text-sk-text-medium">
-            112,780 service locations already have equipment-captioned photos. Retroactive equipment database from existing data.
-          </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
 
       {/* Footer */}
-      <footer className="border-t border-sk-gray-100 pt-6 text-center text-xs text-sk-text-disabled">
-        Equipment extractions run March 18, 2026 using GPT-4o Vision on Skimmer production photos. Total cost: $0.08.
+      <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">
+        Equipment extractions run March 18, 2026 using GPT-4o Vision. {EXTRACTION_STATS.photosProcessed} photos, {EXTRACTION_STATS.successRate} success, {EXTRACTION_STATS.apiCost} total.
       </footer>
     </div>
   );
