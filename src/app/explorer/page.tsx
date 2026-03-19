@@ -238,9 +238,9 @@ export default function ExplorerPage() {
             Photo Explorer
           </h1>
           <p className="mt-2 max-w-2xl text-xs text-sk-text-medium sm:text-sm">
-            Browse <span className="font-semibold text-sk-text">{SAMPLE_PHOTOS.length} real production photos</span> from{" "}
-            <span className="font-semibold text-sk-text">{COMPANIES.length - 1} companies</span>.
-            Click any photo to view it full-size. These are live images from Skimmer&apos;s Azure Blob Storage — the same photos techs see in the app.
+            This is what a <span className="font-semibold text-sk-text">searchable, classified photo database</span> looks like.
+            Today, only the 20% of photos with captions can be categorized. AI classification would do this for all 211 million — automatically.
+            Below are <span className="font-semibold text-sk-text">{SAMPLE_PHOTOS.length} real production photos</span> from {COMPANIES.length - 1} companies, loaded live from Azure Blob Storage.
           </p>
         </motion.div>
       </section>
