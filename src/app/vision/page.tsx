@@ -269,7 +269,7 @@ export default function VisionPage() {
               {[
                 { name: "Pool Brain", ai: "Route optimization, AI chlorine dosing (upcoming), Waterguru integration for remote water monitoring.", photo: "No", photoDetail: "No photo AI capabilities" },
                 { name: "Pooltrac", ai: "Basic — maps, messaging, chemical calculator. Legacy platform with limited modern features.", photo: "No", photoDetail: "Basic photo notes only" },
-                { name: "Pool Founder", ai: "AI route optimization, chemical dosage calculations, invoicing automation.", photo: "No", photoDetail: "No photo AI capabilities" },
+                { name: "Pay the Pool Man", ai: "Billing & invoicing, route management, GPS tracking, LaMotte SpinTouch integration. Recently launched 2.0 beta with updated design.", photo: "No", photoDetail: "No photo AI capabilities" },
               ].map((row) => (
                 <tr key={row.name} className="border-b border-sk-gray-100">
                   <td className="px-4 py-3 font-semibold text-sk-text">{row.name}</td>
