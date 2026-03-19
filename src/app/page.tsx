@@ -345,6 +345,9 @@ export default function OverviewPage() {
           <p className="mb-5 text-sm text-sk-text-medium">
             {fmt(WORK_ORDER_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned photos (last 6 months) — before/after pairs, repairs, equipment details, damage documentation
           </p>
+          <div className="mb-5 rounded-lg bg-sk-sunrise-100 px-4 py-2.5 text-xs text-sk-text-medium">
+            <span className="font-semibold text-sk-sunrise">Note on &ldquo;Other&rdquo; (38%):</span> These are photos with detailed freeform captions that don&apos;t match specific keywords — e.g., &ldquo;Verify valves are set properly and rotating&rdquo;, &ldquo;If applicable, verify PVB valve is on and autofill is at correct level&rdquo;, &ldquo;Thank you!&rdquo;, &ldquo;Notify office in group chat so we can schedule a green to clean.&rdquo; AI classification would categorize these by analyzing the actual photo, not the caption text.
+          </div>
           <ResponsiveContainer width="100%" height={440}>
             <BarChart data={WORK_ORDER_CATEGORIES} layout="vertical" margin={{ left: 190 }} barSize={18}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
@@ -375,6 +378,9 @@ export default function OverviewPage() {
           <p className="mb-5 text-sm text-sk-text-medium">
             {fmt(LOCATION_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned photos (all time) — what&apos;s installed at each service location: pumps, filters, heaters, salt cells
           </p>
+          <div className="mb-5 rounded-lg bg-sk-moss-100 px-4 py-2.5 text-xs text-sk-text-medium">
+            <span className="font-semibold text-sk-moss-700">Note on &ldquo;Other&rdquo; (54%):</span> Location photos have the lowest caption rate (8%). Many &ldquo;Other&rdquo; captions are property-specific notes like &ldquo;ENTER RIGHT&rdquo;, &ldquo;backyard&rdquo;, &ldquo;front of house&rdquo;, or custom site descriptions. These photos likely still show equipment or pool areas — AI vision would classify them by what&apos;s in the image regardless of the caption.
+          </div>
           <ResponsiveContainer width="100%" height={360}>
             <BarChart data={LOCATION_CATEGORIES} layout="vertical" margin={{ left: 175 }} barSize={18}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
