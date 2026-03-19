@@ -89,10 +89,10 @@ export default function OverviewPage() {
             Breakdown by source
           </p>
           {[
-            { icon: Camera, label: "Route Stop Photos", value: fmt(PHOTO_TOTALS.allTime.routeStop), sub: "89% of total" },
-            { icon: Layers, label: "Work Order Photos", value: fmt(PHOTO_TOTALS.allTime.workOrder), sub: "9% of total" },
-            { icon: Image, label: "Location Photos", value: fmt(PHOTO_TOTALS.allTime.location), sub: "2% of total" },
-            { icon: TrendingUp, label: "Monthly Growth", value: `~${fmt(PHOTO_TOTALS.monthlyRate)}`, sub: "new photos each month" },
+            { icon: Camera, label: "Route Stop", value: fmt(PHOTO_TOTALS.allTime.routeStop), sub: "89% of total" },
+            { icon: Layers, label: "Work Order", value: fmt(PHOTO_TOTALS.allTime.workOrder), sub: "9% of total" },
+            { icon: Image, label: "Location", value: fmt(PHOTO_TOTALS.allTime.location), sub: "2% of total" },
+            { icon: TrendingUp, label: "Growth", value: `~${fmt(PHOTO_TOTALS.monthlyRate)}`, sub: "new photos/month" },
           ].map((s) => (
             <div
               key={s.label}
@@ -100,6 +100,7 @@ export default function OverviewPage() {
             >
               <s.icon className="h-5 w-5 text-sk-mint" />
               <div>
+                <div className="text-xs font-medium text-sk-mint">{s.label}</div>
                 <div className="text-xl font-bold">{s.value}</div>
                 <div className="text-xs text-white/50">{s.sub}</div>
               </div>
