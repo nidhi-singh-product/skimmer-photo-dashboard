@@ -150,7 +150,7 @@ export default function DemoPage() {
             <h1 className="text-2xl font-bold text-sk-dark-900 sm:text-3xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
               Live Demo
             </h1>
-            <p className="text-xs text-sk-text-medium sm:text-sm">Paste any Skimmer photo URL → instant AI analysis</p>
+            <p className="text-xs text-sk-text-medium sm:text-sm">Don&apos;t take our word for it — try it yourself. Paste any photo URL or pick a sample below.</p>
           </div>
         </div>
       </motion.section>

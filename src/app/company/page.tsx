@@ -77,8 +77,8 @@ export default function CompanyPage() {
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
             className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg">
-            Not a hypothetical. These are real companies on Skimmer with real photo data.
-            See what their classified photo database and equipment profiles would look like.
+            We&apos;ve shown the dataset, validated the AI, and demonstrated extraction.
+            Now see what it looks like applied to a real company — their photos, their data, their equipment opportunity.
           </motion.p>
         </div>
       </section>

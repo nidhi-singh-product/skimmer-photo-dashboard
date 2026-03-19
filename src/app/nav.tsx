@@ -9,8 +9,8 @@ import { Menu, X } from "lucide-react";
 const links = [
   { href: "/", label: "Overview" },
   { href: "/explorer", label: "Photo Explorer" },
-  { href: "/equipment", label: "Equipment Records" },
-  { href: "/pilot", label: "Pilot Scorecard" },
+  { href: "/pilot", label: "AI Validation" },
+  { href: "/equipment", label: "Equipment Intelligence" },
   { href: "/company", label: "Company Deep Dive" },
   { href: "/demo", label: "Live Demo" },
   { href: "/vision", label: "Vision & Roadmap" },

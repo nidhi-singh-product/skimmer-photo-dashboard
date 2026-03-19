@@ -136,11 +136,11 @@ export default function OverviewPage() {
             transition={{ delay: 0.8, duration: 0.6 }}
             className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg sm:leading-relaxed"
           >
-            Field service photos captured by pool technicians across{" "}
+            Skimmer&apos;s pool technicians have captured the largest field service photo dataset in the industry — across{" "}
             <span className="font-semibold text-white/90">{fmtFull(COVERAGE.companiesTotal)}</span>{" "}
             companies. Growing at{" "}
             <span className="font-semibold text-sk-mint">~{fmt(PHOTO_TOTALS.monthlyRate)}/month</span>.
-            An untapped dataset waiting for AI.
+            Explore the data below, then see what AI can do with it.
           </motion.p>
 
           {/* Source breakdown pills */}

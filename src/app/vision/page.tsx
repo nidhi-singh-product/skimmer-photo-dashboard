@@ -6,7 +6,7 @@ import {
   Cpu, Wrench, TrendingUp, ShieldCheck, DollarSign, Package,
   Clock, FileText, Zap, Target, BarChart3, Globe, Bot,
   Camera, Layers, AlertTriangle, LineChart, Users, Building2,
-  CheckCircle2, CircleDot,
+  CheckCircle2, CircleDot, Video, Volume2, ArrowRight, Scan,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/counter";
 
@@ -87,8 +87,8 @@ export default function VisionPage() {
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
             className="max-w-3xl text-sm leading-relaxed text-white/60 sm:text-lg">
-            Every pool service visit generates photos. Every photo contains information.
-            Today that information is trapped in JPEG files. The vision: unlock it — turning photos into equipment records, service quality scores, predictive insights, and industry intelligence.
+            We&apos;ve proven the AI works, shown what it extracts, and demonstrated it on real companies.
+            Here&apos;s the full product strategy — from equipment profiles today to an intelligent service platform tomorrow.
           </motion.p>
         </div>
       </section>
@@ -178,6 +178,139 @@ export default function VisionPage() {
                 </div>
               </Reveal>
             ))}
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ── Video Intelligence ─────────────────────────────── */}
+      <Reveal>
+        <section className="overflow-hidden rounded-2xl border border-sk-gray-100 bg-white shadow-sm">
+          {/* Header */}
+          <div className="border-b border-sk-gray-100 bg-gradient-to-r from-sk-orchid/5 to-sk-blue-100 p-5 sm:p-6">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sk-orchid text-white">
+                <Video className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-sk-dark-900 sm:text-xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+                  Beyond Photos: Video Intelligence
+                </h2>
+                <p className="text-[10px] text-sk-text-medium sm:text-xs">The same AI pipeline extends to video — with even richer data</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 sm:p-6">
+            <p className="mb-5 max-w-3xl text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+              We&apos;re starting with photos because we have 211M+ of them. But video captures what photos can&apos;t —
+              motion, sound, sequence, and time. With video uploads coming to mobile quotes, every new video becomes an AI asset.
+            </p>
+
+            {/* Photo vs Video comparison */}
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border-l-4 border-l-sk-blue bg-sk-blue-100 p-4">
+                <div className="flex items-center gap-2">
+                  <Camera className="h-4 w-4 text-sk-dark" />
+                  <span className="text-sm font-bold text-sk-dark" style={{ fontFamily: "var(--font-outfit)" }}>Photo</span>
+                </div>
+                <ul className="mt-3 space-y-1.5">
+                  {[
+                    "Captures a single moment",
+                    "~$0.01 per analysis",
+                    "~300KB storage per photo",
+                    "What it is: brand, model, serial",
+                    "What it looks like: condition, damage",
+                    "211M+ assets ready today",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-1.5 text-[10px] text-sk-text-medium sm:text-xs">
+                      <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-sk-dark" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-xl border-l-4 border-l-sk-orchid bg-purple-50 p-4">
+                <div className="flex items-center gap-2">
+                  <Video className="h-4 w-4 text-sk-orchid" />
+                  <span className="text-sm font-bold text-sk-orchid" style={{ fontFamily: "var(--font-outfit)" }}>Video</span>
+                  <span className="rounded-full bg-sk-orchid/10 px-2 py-0.5 text-[9px] font-bold text-sk-orchid">Coming Soon</span>
+                </div>
+                <ul className="mt-3 space-y-1.5">
+                  {[
+                    "Captures motion, sound, and time",
+                    "~$0.15–0.30 per analysis (30 sec)",
+                    "~15–50MB storage per video",
+                    "How it runs: vibration, noise, flow",
+                    "How it changes: leak progression, clarity",
+                    "New asset class starting with mobile quotes",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-1.5 text-[10px] text-sk-text-medium sm:text-xs">
+                      <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-sk-orchid" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Video-only use cases */}
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-sk-text-disabled sm:text-sm">
+              What Video Unlocks That Photos Can&apos;t
+            </h3>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+              {[
+                {
+                  icon: Volume2,
+                  title: "Audio Diagnostics",
+                  description: "A 15-second video of a pump running reveals bearing whine, unusual vibration, or cavitation that no photo can capture. \"This pump sounds abnormal — recommend inspection.\"",
+                  accent: "border-l-sk-orchid",
+                },
+                {
+                  icon: Scan,
+                  title: "Equipment Pad Walkthrough",
+                  description: "One 30-second walk-around video captures every piece of equipment on the pad. Today that takes 5-8 individual photos. Video is more efficient for the tech AND more complete for AI.",
+                  accent: "border-l-sk-blue",
+                },
+                {
+                  icon: LineChart,
+                  title: "Leak Flow Analysis",
+                  description: "A photo shows a wet spot. Video shows where the water is coming from, the flow rate, and whether it's intermittent. Much easier to diagnose remotely without a return visit.",
+                  accent: "border-l-sk-sunrise",
+                },
+                {
+                  icon: Target,
+                  title: "Water Feature Verification",
+                  description: "\"Is the waterfall running correctly?\" can't be answered by a photo. A 10-second video instantly shows if jets, fountains, or waterfalls are operating normally.",
+                  accent: "border-l-sk-moss-700",
+                },
+              ].map((item, i) => (
+                <Reveal key={item.title} delay={i * 0.06}>
+                  <div className={`rounded-xl border-l-4 ${item.accent} bg-white p-3 shadow-sm transition-all hover:shadow-md sm:p-4`}>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-sk-blue-100">
+                        <item.icon className="h-3.5 w-3.5 text-sk-dark" />
+                      </div>
+                      <span className="text-xs font-bold text-sk-text sm:text-sm">{item.title}</span>
+                    </div>
+                    <p className="mt-2 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">{item.description}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            {/* Connection to mobile quotes */}
+            <div className="mt-5 flex items-start gap-3 rounded-xl bg-sk-navy/5 p-4 sm:mt-6">
+              <ArrowRight className="mt-0.5 h-4 w-4 flex-shrink-0 text-sk-dark" />
+              <div>
+                <div className="text-xs font-bold text-sk-dark sm:text-sm">The connection: Mobile Quotes Video Upload</div>
+                <p className="mt-1 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">
+                  We&apos;re currently building video upload support for mobile quotes. Once live, every video a tech records becomes
+                  an AI asset — the same pipeline that processes photos can extract frames from video, analyze audio, and generate
+                  richer insights than any single photo. The photo intelligence infrastructure we&apos;re building today is the foundation for video intelligence tomorrow.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </Reveal>

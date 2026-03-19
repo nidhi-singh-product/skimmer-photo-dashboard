@@ -71,7 +71,7 @@ export default function EquipmentPage() {
         <div className="relative z-10">
           <motion.p initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
             className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-sk-moss-500 sm:text-sm">
-            Equipment Intelligence
+            Equipment Intelligence — What AI Extracts
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
             className="mb-3 text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.03em" }}>
@@ -79,7 +79,8 @@ export default function EquipmentPage() {
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
             className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg">
-            Techs already photograph dataplates. AI reads them in seconds — brand, model, serial, manufacture date — and links them to the service location. No new behavior required.
+            Now that we&apos;ve validated AI works (see AI Validation), here&apos;s what it actually extracts.
+            Brand, model, serial, manufacture date — from photos techs already take. No new behavior required.
           </motion.p>
 
           <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:gap-3">

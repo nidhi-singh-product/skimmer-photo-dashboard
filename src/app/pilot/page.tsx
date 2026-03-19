@@ -43,7 +43,7 @@ export default function PilotPage() {
         <div className="relative z-10">
           <motion.p initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
             className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-sk-moss-500 sm:text-sm">
-            Pilot Validation
+            AI Validation
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
             className="mb-3 text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.03em" }}>
@@ -53,11 +53,11 @@ export default function PilotPage() {
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
             className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg">
-            We tested AI on{" "}
+            Before building anything, we tested: does AI actually work on real pool service photos? We ran{" "}
             <span className="font-semibold text-white/90">{PILOT_TOTAL_PHOTOS} real production photos</span>{" "}
-            using GPT-4o Vision. Total cost:{" "}
+            through GPT-4o Vision for{" "}
             <span className="font-semibold text-sk-mint">{PILOT_TOTAL_COST}</span>.
-            Not a vendor demo — real photos from real techs in the field.
+            Not a vendor demo — real photos from real techs.
           </motion.p>
 
           {/* Summary stats */}
