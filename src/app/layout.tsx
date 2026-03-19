@@ -73,6 +73,12 @@ export default function RootLayout({
               >
                 Pilot Scorecard
               </Link>
+              <Link
+                href="/vision"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-sk-text-medium transition-colors hover:bg-sk-blue-light hover:text-sk-blue"
+              >
+                Vision & Roadmap
+              </Link>
             </div>
           </div>
         </nav>
