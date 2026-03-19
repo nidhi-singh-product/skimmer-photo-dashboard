@@ -11,6 +11,7 @@ const links = [
   { href: "/explorer", label: "Photo Explorer" },
   { href: "/equipment", label: "Equipment Records" },
   { href: "/pilot", label: "Pilot Scorecard" },
+  { href: "/company", label: "Company Deep Dive" },
   { href: "/demo", label: "Live Demo" },
   { href: "/vision", label: "Vision & Roadmap" },
 ];
