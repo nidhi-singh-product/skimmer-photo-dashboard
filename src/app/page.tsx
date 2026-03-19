@@ -5,9 +5,11 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { Camera, TrendingUp, Tag, Database, Image, Layers } from "lucide-react";
+import { Wrench, MapPin } from "lucide-react";
 import {
   PHOTO_TOTALS, MONTHLY_TREND, LABEL_COVERAGE,
-  ROUTE_STOP_CATEGORIES, COVERAGE,
+  ROUTE_STOP_CATEGORIES, WORK_ORDER_CATEGORIES, LOCATION_CATEGORIES,
+  COVERAGE,
 } from "@/lib/photo-data";
 
 function fmt(n: number): string {
@@ -289,39 +291,117 @@ export default function OverviewPage() {
       </section>
 
       {/* ── What Are Techs Photographing? ────────────────── */}
-      <section className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-1 text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
-          What Are Techs Photographing?
-        </h2>
-        <p className="mb-6 text-sm text-sk-text-medium">
-          Categories from {fmt(LABEL_COVERAGE.routeStop.withCaption)} captioned route stop photos (last 6 months)
-        </p>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart
-            data={ROUTE_STOP_CATEGORIES}
-            layout="vertical"
-            margin={{ left: 160 }}
-            barSize={20}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
-            <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
-            <YAxis
-              type="category"
-              dataKey="category"
-              tick={{ fontSize: 12, fill: "#212B36" }}
-              width={155}
-            />
-            <Tooltip
-              formatter={(value) => [fmtFull(Number(value)), "Photos"]}
-              contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }}
-            />
-            <Bar dataKey="count" radius={[0, 6, 6, 0]}>
-              {ROUTE_STOP_CATEGORIES.map((_, i) => (
-                <Cell key={i} fill={CATEGORY_COLORS[i % CATEGORY_COLORS.length]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+      <section className="space-y-6">
+        <div>
+          <h2 className="text-xl font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
+            What Are Techs Photographing?
+          </h2>
+          <p className="mt-1 text-sm text-sk-text-medium">
+            Each photo source tells a different story. Route stops are routine verification, work orders are service documentation, and location photos are equipment inventory.
+          </p>
+        </div>
+
+        {/* Route Stop Photos */}
+        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
+          <div className="mb-1 flex items-center gap-2">
+            <Camera className="h-5 w-5 text-sk-blue" />
+            <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+              Route Stop Photos
+            </h3>
+            <span className="rounded-full bg-sk-blue-light px-2.5 py-0.5 text-xs font-medium text-sk-blue">
+              Routine Verification
+            </span>
+          </div>
+          <p className="mb-5 text-sm text-sk-text-medium">
+            {fmt(LABEL_COVERAGE.routeStop.withCaption)} captioned photos (last 6 months) — mostly checklist-driven proof-of-work
+          </p>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={ROUTE_STOP_CATEGORIES} layout="vertical" margin={{ left: 170 }} barSize={18}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
+              <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
+              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: "#212B36" }} width={165} />
+              <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }} />
+              <Bar dataKey="count" fill="#4795EC" radius={[0, 6, 6, 0]}>
+                {ROUTE_STOP_CATEGORIES.map((_, i) => (
+                  <Cell key={i} fill={CATEGORY_COLORS[i % CATEGORY_COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Work Order Photos */}
+        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
+          <div className="mb-1 flex items-center gap-2">
+            <Wrench className="h-5 w-5 text-sk-sunrise" />
+            <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+              Work Order Photos
+            </h3>
+            <span className="rounded-full bg-sk-sunrise-100 px-2.5 py-0.5 text-xs font-medium text-sk-sunrise">
+              Service Documentation
+            </span>
+          </div>
+          <p className="mb-5 text-sm text-sk-text-medium">
+            {fmt(WORK_ORDER_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned photos (last 6 months) — before/after pairs, repairs, equipment details, damage documentation
+          </p>
+          <ResponsiveContainer width="100%" height={440}>
+            <BarChart data={WORK_ORDER_CATEGORIES} layout="vertical" margin={{ left: 190 }} barSize={18}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
+              <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
+              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: "#212B36" }} width={185} />
+              <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }} />
+              <Bar dataKey="count" fill="#FB8B24" radius={[0, 6, 6, 0]}>
+                {WORK_ORDER_CATEGORIES.map((_, i) => {
+                  const colors = ["#FB8B24", "#FCA250", "#E07B20", "#D46A10", "#C85A00", "#B04E00", "#984200", "#803600", "#682A00", "#501E00", "#381200", "#200600", "#637381", "#919EAB", "#B7BABF"];
+                  return <Cell key={i} fill={colors[i % colors.length]} />;
+                })}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Location Photos */}
+        <div className="rounded-xl border border-sk-gray-100 bg-white p-6 shadow-sm">
+          <div className="mb-1 flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-sk-moss-700" />
+            <h3 className="text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+              Location Photos
+            </h3>
+            <span className="rounded-full bg-sk-moss-100 px-2.5 py-0.5 text-xs font-medium text-sk-moss-700">
+              Equipment Inventory
+            </span>
+          </div>
+          <p className="mb-5 text-sm text-sk-text-medium">
+            {fmt(LOCATION_CATEGORIES.reduce((a, c) => a + c.count, 0))} captioned photos (all time) — what&apos;s installed at each service location: pumps, filters, heaters, salt cells
+          </p>
+          <ResponsiveContainer width="100%" height={360}>
+            <BarChart data={LOCATION_CATEGORIES} layout="vertical" margin={{ left: 175 }} barSize={18}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" horizontal={false} />
+              <XAxis type="number" tickFormatter={(v) => fmt(Number(v))} tick={{ fontSize: 11, fill: "#637381" }} />
+              <YAxis type="category" dataKey="category" tick={{ fontSize: 12, fill: "#212B36" }} width={170} />
+              <Tooltip formatter={(value) => [fmtFull(Number(value)), "Photos"]} contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB" }} />
+              <Bar dataKey="count" fill="#90CC19" radius={[0, 6, 6, 0]}>
+                {LOCATION_CATEGORIES.map((_, i) => {
+                  const colors = ["#90CC19", "#A6D647", "#6C9913", "#5A8010", "#48670D", "#364E0A", "#243306", "#4795EC", "#3570B1", "#244B76", "#637381", "#919EAB"];
+                  return <Cell key={i} fill={colors[i % colors.length]} />;
+                })}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Insight callout */}
+        <div className="rounded-xl bg-sk-blue-light p-5">
+          <h4 className="text-sm font-bold text-sk-dark-800" style={{ fontFamily: "var(--font-outfit)" }}>
+            Why This Matters
+          </h4>
+          <p className="mt-1 text-sm text-sk-text-medium">
+            Each source requires a different AI approach.
+            <strong> Route stop photos</strong> are best for quality scoring and compliance verification (was the basket cleaned? was the gate closed?).
+            <strong> Work order photos</strong> are best for equipment OCR, damage detection, and before/after comparison.
+            <strong> Location photos</strong> are the richest source for building equipment inventory — they&apos;re literally documenting what&apos;s installed at each site.
+          </p>
+        </div>
       </section>
 
       {/* ── The Opportunity Callout ───────────────────────── */}

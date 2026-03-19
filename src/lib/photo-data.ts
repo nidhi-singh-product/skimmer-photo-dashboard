@@ -78,6 +78,43 @@ export const ROUTE_STOP_CATEGORIES = [
   { category: "Damage / Repair", count: 29_218, pct: 0.4 },
 ];
 
+/* ─── Photo Categories (Work Order, 587K captioned, last 6 months) ── */
+
+export const WORK_ORDER_CATEGORIES = [
+  { category: "After / Completion", count: 52_093, pct: 8.9 },
+  { category: "Before Photo", count: 47_853, pct: 8.2 },
+  { category: "Filter Work", count: 44_068, pct: 7.5 },
+  { category: "General Photo", count: 43_538, pct: 7.4 },
+  { category: "Pool Condition", count: 33_533, pct: 5.7 },
+  { category: "Pump / Motor", count: 29_501, pct: 5.0 },
+  { category: "Leak / Damage", count: 22_389, pct: 3.8 },
+  { category: "Valve / Actuator", count: 21_098, pct: 3.6 },
+  { category: "Completion / Verification", count: 19_265, pct: 3.3 },
+  { category: "Gate / Closure", count: 12_906, pct: 2.2 },
+  { category: "Model / Serial / Dataplate", count: 11_005, pct: 1.9 },
+  { category: "Heater", count: 11_135, pct: 1.9 },
+  { category: "Salt Cell", count: 8_424, pct: 1.4 },
+  { category: "Green Pool / Algae", count: 6_808, pct: 1.2 },
+  { category: "Other", count: 224_116, pct: 38.2 },
+];
+
+/* ─── Photo Categories (Location, 359K captioned) ───────── */
+
+export const LOCATION_CATEGORIES = [
+  { category: "Pump (all types)", count: 44_750, pct: 12.5 },
+  { category: "Pool Overview", count: 26_044, pct: 7.3 },
+  { category: "Filter", count: 24_072, pct: 6.7 },
+  { category: "Spa", count: 14_800, pct: 4.1 },
+  { category: "Heater", count: 11_129, pct: 3.1 },
+  { category: "Gate / Entry", count: 10_793, pct: 3.0 },
+  { category: "Equipment / Pad", count: 9_242, pct: 2.6 },
+  { category: "After Photo", count: 8_256, pct: 2.3 },
+  { category: "Water Feature / Autofill", count: 5_070, pct: 1.4 },
+  { category: "Salt Cell / Chlorinator", count: 4_946, pct: 1.4 },
+  { category: "Before Photo", count: 4_750, pct: 1.3 },
+  { category: "Other", count: 194_920, pct: 54.3 },
+];
+
 /* ─── Pilot Scorecard ────────────────────────────────────── */
 
 export interface PilotResult {
