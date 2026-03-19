@@ -47,7 +47,40 @@ export default function PilotPage() {
           <span className="font-semibold text-sk-text">{PILOT_TOTAL_PHOTOS} real production photos</span>{" "}
           across 5 use cases using GPT-4o Vision. Total cost:{" "}
           <span className="font-semibold text-sk-moss-700">{PILOT_TOTAL_COST}</span>.
+          Not a vendor demo, not synthetic data — real photos from real techs in the field.
         </p>
+      </section>
+
+      {/* ── What This Proves ─────────────────────────────── */}
+      <section className="rounded-xl border border-sk-blue-200 bg-sk-blue-light p-6">
+        <h2 className="mb-4 text-lg font-bold text-sk-dark-900" style={{ fontFamily: "var(--font-outfit)" }}>
+          What This Proves
+        </h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {[
+            {
+              result: "Classification works (85%+)",
+              soWhat: "We can categorize the 80% of photos that have no caption — turning invisible data into searchable, structured categories.",
+            },
+            {
+              result: "Equipment OCR works (100%)",
+              soWhat: "We can read brand, model, and serial from dataplates — meaning we can build an equipment database from photos techs already take.",
+            },
+            {
+              result: "Gauge reading works (70%)",
+              soWhat: "We can extract PSI values from pressure gauge photos — opening the door to automated filter pressure tracking over time.",
+            },
+            {
+              result: "Water clarity scoring works (95%)",
+              soWhat: "We can assess pool condition from a photo — enabling water quality trends and early detection of algae or clarity issues.",
+            },
+          ].map((item) => (
+            <div key={item.result} className="rounded-lg bg-white p-4 shadow-sm">
+              <div className="text-sm font-bold text-sk-blue">{item.result}</div>
+              <p className="mt-1 text-xs text-sk-text-medium">{item.soWhat}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ── Summary Stats ────────────────────────────────── */}
