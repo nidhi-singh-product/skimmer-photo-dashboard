@@ -267,7 +267,7 @@ export default function VisionPage() {
             </thead>
             <tbody>
               {[
-                { name: "Pool Brain", ai: "Route optimization, AI chlorine dosing (upcoming), Waterguru integration for remote water monitoring. Has PoolBrain.ai (industry-tuned LLM for text/knowledge).", photo: "No", photoDetail: "LLM is text-based, not photo analysis" },
+                { name: "Pool Brain", ai: "Route optimization, AI chlorine dosing (upcoming), Waterguru integration for remote water monitoring.", photo: "No", photoDetail: "No photo AI capabilities" },
                 { name: "Pooltrac", ai: "Basic — maps, messaging, chemical calculator. Legacy platform with limited modern features.", photo: "No", photoDetail: "Basic photo notes only" },
                 { name: "Pool Founder", ai: "AI route optimization, chemical dosage calculations, invoicing automation.", photo: "No", photoDetail: "No photo AI capabilities" },
               ].map((row) => (
