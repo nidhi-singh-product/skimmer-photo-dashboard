@@ -335,9 +335,9 @@ export default function CompanyPage() {
 
       {/* Next Page */}
       <NextPage
-        href="/demo"
-        label="Live Demo"
-        description="Don't take our word for it — try AI analysis on any Skimmer photo yourself."
+        href="/demand"
+        label="Customer Demand"
+        description="This isn't our idea — see what pros are actually asking for."
       />
 
       {/* Footer */}
