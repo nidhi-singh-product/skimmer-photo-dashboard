@@ -271,15 +271,123 @@ export default function EquipmentPage() {
         </section>
       </Reveal>
 
+      {/* ── Two Journeys ──────────────────────────────────── */}
+      <Reveal>
+        <section className="overflow-hidden rounded-2xl border border-sk-gray-100 bg-white shadow-sm">
+          <div className="border-b border-sk-gray-100 bg-sk-navy px-5 py-4 sm:px-6 sm:py-5">
+            <h2 className="text-base font-bold text-white sm:text-xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+              How It Works: Two Paths to an Equipment Database
+            </h2>
+            <p className="mt-1 text-[10px] text-white/50 sm:text-xs">
+              Retroactive processing unlocks history. Real-time processing builds the future. Both require zero new behavior from techs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 divide-y divide-sk-gray-100 lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+            {/* Journey 1: Retroactive */}
+            <div className="p-5 sm:p-6">
+              <div className="mb-4 flex items-center gap-2.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sk-blue-100">
+                  <Clock className="h-4 w-4 text-sk-dark" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-sk-dark sm:text-base" style={{ fontFamily: "var(--font-outfit)" }}>Path 1: Unlock the Past</span>
+                  <span className="ml-2 rounded-full bg-sk-blue-100 px-2 py-0.5 text-[9px] font-bold text-sk-dark sm:text-[10px]">~$280 one-time</span>
+                </div>
+              </div>
+
+              <div className="space-y-0">
+                {[
+                  { step: "1", text: "70K equipment photos already exist in blob storage", sub: "Taken by techs over the past years — dataplates, pumps, heaters, filters", color: "bg-sk-dark" },
+                  { step: "2", text: "Batch OCR processes all 70K photos", sub: "AI reads brand, model, serial, manufacture date from each dataplate", color: "bg-sk-blue" },
+                  { step: "3", text: "Structured equipment records created", sub: "Linked to service locations via work orders", color: "bg-sk-blue" },
+                  { step: "4", text: "~100K service locations get equipment profiles", sub: "Searchable, queryable — instantly available to every tech and office staff", color: "bg-sk-moss-700" },
+                ].map((item, i) => (
+                  <Reveal key={item.step} delay={i * 0.06}>
+                    <div className="flex gap-3 py-2.5">
+                      <div className="flex flex-col items-center">
+                        <div className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full ${item.color} text-[10px] font-bold text-white`}>
+                          {item.step}
+                        </div>
+                        {i < 3 && <div className="h-full w-px bg-sk-gray-200" />}
+                      </div>
+                      <div className="pb-2">
+                        <div className="text-xs font-semibold text-sk-text sm:text-sm">{item.text}</div>
+                        <div className="mt-0.5 text-[10px] text-sk-text-medium sm:text-xs">{item.sub}</div>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            {/* Journey 2: Real-Time */}
+            <div className="p-5 sm:p-6">
+              <div className="mb-4 flex items-center gap-2.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sk-moss-100">
+                  <Zap className="h-4 w-4 text-sk-moss-700" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-sk-dark sm:text-base" style={{ fontFamily: "var(--font-outfit)" }}>Path 2: Build the Future</span>
+                  <span className="ml-2 rounded-full bg-sk-moss-100 px-2 py-0.5 text-[9px] font-bold text-sk-moss-700 sm:text-[10px]">$0/month ongoing</span>
+                </div>
+              </div>
+
+              <div className="space-y-0">
+                {[
+                  { step: "1", text: "Tech arrives at a service location for a repair", sub: "Opens the work order in the Skimmer mobile app — same as today", color: "bg-sk-dark" },
+                  { step: "2", text: "Takes a photo of the equipment dataplate", sub: "They already do this — we have 7,556 of these. No new behavior.", color: "bg-sk-moss-700" },
+                  { step: "3", text: "On-device OCR runs instantly", sub: "Apple Vision / Google ML Kit — free, offline, no internet needed", color: "bg-sk-moss-700" },
+                  { step: "4", text: "App auto-fills equipment fields", sub: "\"Pentair IntelliFlo VS, Model 011018, Serial #PP2024-VS-00847\"", color: "bg-sk-moss-700" },
+                  { step: "5", text: "Tech confirms — equipment record saved", sub: "Linked to service location. Next tech sees it before opening the gate.", color: "bg-sk-moss-700" },
+                  { step: "6", text: "Over a few visits, full inventory builds itself", sub: "Pump, filter, heater, salt cell — all from photos techs take anyway", color: "bg-sk-blue" },
+                ].map((item, i) => (
+                  <Reveal key={item.step} delay={i * 0.06}>
+                    <div className="flex gap-3 py-2">
+                      <div className="flex flex-col items-center">
+                        <div className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full ${item.color} text-[10px] font-bold text-white`}>
+                          {item.step}
+                        </div>
+                        {i < 5 && <div className="h-full w-px bg-sk-gray-200" />}
+                      </div>
+                      <div className="pb-1.5">
+                        <div className="text-xs font-semibold text-sk-text sm:text-sm">{item.text}</div>
+                        <div className="mt-0.5 text-[10px] text-sk-text-medium sm:text-xs">{item.sub}</div>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom callout */}
+          <div className="border-t border-sk-gray-100 bg-sk-navy/5 px-5 py-3 sm:px-6 sm:py-4">
+            <p className="text-[10px] text-sk-text-medium sm:text-xs">
+              <span className="font-semibold text-sk-text">Both paths start with the same action:</span> a tech takes a photo of a dataplate.
+              Path 1 reads the photos they&apos;ve already taken. Path 2 reads every new photo going forward.
+              Together, they build a complete equipment database — with zero new behavior from any technician.
+            </p>
+          </div>
+        </section>
+      </Reveal>
+
       {/* ── Product Vision ─────────────────────────────────── */}
       <Reveal>
         <section>
           <h2 className="mb-2 text-lg font-bold text-sk-dark-900 sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
-            Product Vision: Equipment Profile per Service Location
+            The Result: What Every Service Location Gets
           </h2>
-          <p className="mb-4 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
-            What the equipment tab could look like — built entirely from photos techs already take.
+          <p className="mb-3 text-xs text-sk-text-medium sm:text-sm">
+            After Path 1 and Path 2 build the database, every service location gets a profile like this.
           </p>
+          <div className="mb-4 rounded-lg border-l-4 border-l-sk-blue bg-sk-blue-100 px-3 py-2.5 sm:mb-6 sm:px-4 sm:py-3">
+            <p className="text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">
+              <span className="font-semibold text-sk-dark">The scenario:</span> A tech is dispatched to 123 Oak Lane for a pump repair.
+              Before they leave the shop, they open the customer&apos;s equipment profile and see everything installed —
+              brand, model, age, condition. They bring the right parts on the first trip. No wasted visit. No phone call to the office.
+            </p>
+          </div>
 
           <div className="overflow-hidden rounded-xl border border-sk-blue-200 bg-white shadow-sm">
             <div className="border-b border-sk-gray-100 bg-sk-blue-100 px-4 py-3 sm:px-6 sm:py-4">
