@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { NextPage } from "@/components/next-page";
 import {
   Sparkles, Search, Loader2, ImageIcon, Tag, FileText,
   Wrench, Eye, Lightbulb, AlertCircle, Copy, Check,
@@ -355,6 +356,13 @@ export default function DemoPage() {
           This runs in real-time (~3-5 seconds). Cost: ~$0.01 per photo. In production, this would run automatically on every photo uploaded via the mobile app.
         </p>
       </section>
+
+      {/* Next Page */}
+      <NextPage
+        href="/vision"
+        label="Vision & Roadmap"
+        description="Where this goes — from equipment profiles to an intelligent service platform."
+      />
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">

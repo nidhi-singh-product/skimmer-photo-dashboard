@@ -6,6 +6,7 @@ import {
   CheckCircle2, Clock, AlertTriangle, DollarSign, Camera, Zap, Target,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/counter";
+import { NextPage } from "@/components/next-page";
 import { PILOT_RESULTS, PILOT_TOTAL_COST, PILOT_TOTAL_PHOTOS } from "@/lib/photo-data";
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -159,29 +160,20 @@ export default function PilotPage() {
 
       {/* ── Bottom Line ──────────────────────────────────── */}
       <Reveal>
-        <section className="overflow-hidden rounded-2xl bg-sk-navy p-6 text-white sm:p-10">
-          <h2 className="mb-6 text-lg font-bold sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
-            Bottom Line
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
-            {[
-              { value: "$0.48", label: "Analyzed 120 real production photos", accent: "border-t-sk-blue" },
-              { value: "~$280", label: "To build equipment DB from 70K photos", accent: "border-t-sk-sunrise" },
-              { value: "$0/mo", label: "On-device OCR in mobile app (offline)", accent: "border-t-sk-moss" },
-            ].map((item, i) => (
-              <motion.div key={item.label} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}
-                className={`rounded-xl border-t-4 ${item.accent} bg-white/[0.06] p-4 backdrop-blur-sm sm:p-5`}>
-                <div className="text-2xl font-bold sm:text-3xl" style={{ fontFamily: "var(--font-outfit)" }}>{item.value}</div>
-                <div className="mt-1 text-xs text-white/70 sm:text-sm">{item.label}</div>
-              </motion.div>
-            ))}
-          </div>
-          <p className="mt-6 text-xs leading-relaxed text-white/50 sm:text-sm">
-            The data is there. The technology is proven. The cost is trivial.
-            Four of five use cases validated. The equipment database build costs less than a team lunch.
+        <section className="rounded-xl border border-sk-dark-200 bg-gradient-to-r from-sk-blue-100 via-white to-sk-moss-100 p-5 sm:p-6">
+          <p className="text-xs text-sk-text sm:text-sm">
+            <span className="font-bold">The technology works.</span> 4 of 5 use cases validated on real production photos for {PILOT_TOTAL_COST} total.
+            Now see what AI actually extracts from these photos — and what we can build with it.
           </p>
         </section>
       </Reveal>
+
+      {/* Next Page */}
+      <NextPage
+        href="/equipment"
+        label="Equipment Intelligence"
+        description="See what AI extracts from dataplates — brand, model, serial — and how it builds an equipment database."
+      />
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">

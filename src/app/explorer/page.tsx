@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, ImageIcon, Building2, Tag, X, ChevronLeft, ChevronRight, Camera, Layers } from "lucide-react";
+import { NextPage } from "@/components/next-page";
 import {
   SAMPLE_PHOTOS, CATEGORIES, COMPANIES, SOURCES,
   type SamplePhoto,
@@ -379,6 +380,13 @@ export default function ExplorerPage() {
           AI classification would assign categories automatically by analyzing the image itself.
         </p>
       </section>
+
+      {/* Next Page */}
+      <NextPage
+        href="/pilot"
+        label="AI Validation"
+        description="Does AI actually work on these photos? We tested 5 use cases on real production data."
+      />
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">

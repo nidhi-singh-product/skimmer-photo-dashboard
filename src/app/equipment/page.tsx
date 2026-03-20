@@ -8,6 +8,7 @@ import {
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/counter";
+import { NextPage } from "@/components/next-page";
 import {
   EQUIPMENT_EXTRACTIONS, EXTRACTION_STATS, MOCK_PROFILES,
 } from "@/lib/equipment-data";
@@ -460,6 +461,13 @@ export default function EquipmentPage() {
           </div>
         </section>
       </Reveal>
+
+      {/* Next Page */}
+      <NextPage
+        href="/company"
+        label="Company Deep Dive"
+        description="See what this looks like for a real Skimmer company — their photos, their data, their equipment opportunity."
+      />
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">

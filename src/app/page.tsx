@@ -5,9 +5,11 @@ import {
   BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+// BarChart still used for category charts
 import { motion, useInView } from "framer-motion";
 import { Camera, TrendingUp, Tag, Database, Image, Layers, Wrench, MapPin } from "lucide-react";
 import { AnimatedCounter } from "@/components/counter";
+import { NextPage } from "@/components/next-page";
 import {
   PHOTO_TOTALS, MONTHLY_TREND, LABEL_COVERAGE,
   ROUTE_STOP_CATEGORIES, WORK_ORDER_CATEGORIES, LOCATION_CATEGORIES,
@@ -61,10 +63,7 @@ export default function OverviewPage() {
     { name: "Unlabeled", value: unlabeledTotal },
   ];
 
-  const trendData = MONTHLY_TREND.map((m) => ({
-    ...m,
-    photosM: +(m.photos / 1_000_000).toFixed(2),
-  }));
+  // trendData removed — monthly chart removed per audit
 
   return (
     <div className="space-y-8 sm:space-y-12">
@@ -218,34 +217,6 @@ export default function OverviewPage() {
         ))}
       </section>
 
-      {/* ── Monthly Growth ───────────────────────────────── */}
-      <RevealSection>
-        <section className="rounded-xl border border-sk-gray-100 bg-white p-4 shadow-sm sm:p-6">
-          <h2 className="mb-1 text-base font-bold sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
-            Photos Uploaded Per Month
-          </h2>
-          <p className="mb-4 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
-            Route stop photos — last 7 months (Mar 2026 is partial)
-          </p>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={trendData} barSize={36}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E9EAEB" />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#637381" }} />
-              <YAxis tick={{ fontSize: 11, fill: "#637381" }} tickFormatter={(v) => `${v}M`} />
-              <Tooltip
-                formatter={(value) => [`${Number(value).toFixed(2)}M photos`, "Photos"]}
-                contentStyle={{ borderRadius: 8, border: "1px solid #E9EAEB", fontSize: 13 }}
-              />
-              <Bar dataKey="photosM" radius={[6, 6, 0, 0]}>
-                {trendData.map((_, i) => (
-                  <Cell key={i} fill={i === trendData.length - 1 ? "#91BFF4" : "#256295"} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </section>
-      </RevealSection>
-
       {/* ── Label Gap + Sources ───────────────────────────── */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <RevealSection>
@@ -322,6 +293,40 @@ export default function OverviewPage() {
           </div>
         </RevealSection>
       </div>
+
+      {/* ── Opportunity (moved up from bottom) ────────────── */}
+      <RevealSection>
+        <section className="overflow-hidden rounded-2xl bg-sk-navy p-6 text-white sm:p-10">
+          <h2
+            className="mb-6 text-lg font-bold sm:text-2xl"
+            style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}
+          >
+            The Opportunity
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+            {[
+              { value: COVERAGE.serviceLocationsWithEquipmentPhotos, suffix: "", label: "Service locations with equipment photos", sub: "Ready for OCR — brand, model, serial from existing dataplates", accent: "border-t-sk-blue" },
+              { value: 7556, suffix: "", label: "Photos with model/serial captions", sub: "Techs already photograph dataplates — AI just needs to read them", accent: "border-t-sk-sunrise" },
+              { value: 128470, suffix: "", label: "Pressure gauge photos", sub: "AI can read PSI and build filter pressure trends over time", accent: "border-t-sk-moss" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.5 }}
+                className={`rounded-xl border-t-4 ${item.accent} bg-white/[0.06] p-4 backdrop-blur-sm sm:p-5`}
+              >
+                <div className="text-2xl font-bold text-white sm:text-3xl" style={{ fontFamily: "var(--font-outfit)" }}>
+                  <AnimatedCounter end={item.value} duration={1800} />
+                </div>
+                <div className="mt-1 text-xs font-medium text-white/80 sm:text-sm">{item.label}</div>
+                <div className="mt-1.5 text-[10px] text-white/45 sm:text-xs">{item.sub}</div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      </RevealSection>
 
       {/* ── Category Charts ──────────────────────────────── */}
       <section className="space-y-5 sm:space-y-6">
@@ -438,39 +443,12 @@ export default function OverviewPage() {
         </RevealSection>
       </section>
 
-      {/* ── Opportunity ──────────────────────────────────── */}
-      <RevealSection>
-        <section className="overflow-hidden rounded-2xl bg-sk-navy p-6 text-white sm:p-10">
-          <h2
-            className="mb-6 text-lg font-bold sm:text-2xl"
-            style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}
-          >
-            The Opportunity
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
-            {[
-              { value: COVERAGE.serviceLocationsWithEquipmentPhotos, suffix: "", label: "Service locations with equipment photos", sub: "Ready for OCR — brand, model, serial from existing dataplates", accent: "border-t-sk-blue" },
-              { value: 7556, suffix: "", label: "Photos with model/serial captions", sub: "Techs already photograph dataplates — AI just needs to read them", accent: "border-t-sk-sunrise" },
-              { value: 128470, suffix: "", label: "Pressure gauge photos", sub: "AI can read PSI and build filter pressure trends over time", accent: "border-t-sk-moss" },
-            ].map((item, i) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.5 }}
-                className={`rounded-xl border-t-4 ${item.accent} bg-white/[0.06] p-4 backdrop-blur-sm sm:p-5`}
-              >
-                <div className="text-2xl font-bold text-white sm:text-3xl" style={{ fontFamily: "var(--font-outfit)" }}>
-                  <AnimatedCounter end={item.value} duration={1800} />
-                </div>
-                <div className="mt-1 text-xs font-medium text-white/80 sm:text-sm">{item.label}</div>
-                <div className="mt-1.5 text-[10px] text-white/45 sm:text-xs">{item.sub}</div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      </RevealSection>
+      {/* ── Next Page ────────────────────────────────────── */}
+      <NextPage
+        href="/explorer"
+        label="Photo Explorer"
+        description="See what the actual photos look like — 61 real production photos you can browse and filter."
+      />
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">

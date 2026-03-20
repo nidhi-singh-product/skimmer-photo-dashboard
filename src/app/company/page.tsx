@@ -9,6 +9,7 @@ import {
   Building2, Camera, Image, MapPin, Users, Wrench, Lightbulb, Tag, ChevronRight,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/counter";
+import { NextPage } from "@/components/next-page";
 import { COMPANIES_DATA, type CompanyProfile } from "@/lib/company-data";
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -331,6 +332,13 @@ export default function CompanyPage() {
           </div>
         </section>
       </Reveal>
+
+      {/* Next Page */}
+      <NextPage
+        href="/demo"
+        label="Live Demo"
+        description="Don't take our word for it — try AI analysis on any Skimmer photo yourself."
+      />
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">
