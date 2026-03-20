@@ -227,9 +227,20 @@ export default function EquipmentPage() {
           <h2 className="mb-2 text-lg font-bold text-sk-dark-900 sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
             Why Structured Equipment Records Matter
           </h2>
-          <p className="mb-4 max-w-3xl text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
-            Equipment data lives trapped inside photos — invisible to search, reporting, and automation. A structured record turns a JPEG into actionable intelligence.
-          </p>
+
+          {/* The Problem Today */}
+          <div className="mb-5 rounded-xl border border-sk-sunrise/20 bg-sk-sunrise-100 p-4 sm:mb-6 sm:p-5">
+            <h3 className="text-xs font-bold text-sk-sunrise sm:text-sm" style={{ fontFamily: "var(--font-outfit)" }}>The Problem Today</h3>
+            <p className="mt-1.5 text-[10px] leading-relaxed text-sk-text-medium sm:text-sm">
+              If a pro wants to know &ldquo;what pump does my customer at 123 Oak Lane have?&rdquo; — there&apos;s no way to answer that without
+              driving to the location, scrolling through old work order photos hoping someone took a dataplate picture, or calling the tech who was there last.
+              <span className="font-semibold text-sk-text"> The data already exists in photos. It&apos;s just locked inside JPEGs — invisible to search, reporting, and automation.</span>
+            </p>
+            <p className="mt-2 text-[10px] leading-relaxed text-sk-text-medium sm:text-sm">
+              OCR turns those photos into a structured database: &ldquo;123 Oak Lane: Pentair IntelliFlo VS, Serial #XYZ, installed 2019, 6 years old.&rdquo;
+              Searchable. Queryable. Linked to work orders and service history. For <span className="font-semibold text-sk-sunrise">$280 total</span> across all 70K equipment photos.
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {[
