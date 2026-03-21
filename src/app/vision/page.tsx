@@ -420,8 +420,8 @@ export default function VisionPage() {
           <h2 className="mb-5 text-base font-bold text-sk-dark-900 sm:mb-6 sm:text-xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>Roadmap</h2>
           <div className="space-y-3 sm:space-y-4">
             {[
-              { phase: "Pilot", what: "Prove AI works on real Skimmer photos — classification, OCR, gauge reading, water clarity", cost: "$0.60", timeline: "Done", done: true },
-              { phase: "Equipment Database", what: "Process 70K equipment-captioned photos → structured records for ~100K service locations", cost: "~$280", timeline: "TBD", done: false },
+              { phase: "Pilot", what: "Validated AI on 120 production photos — water clarity 100%, gauge reading 74%, equipment brand 100%, classification 58%. Core finding: AI accuracy is high when photo contains the right signal.", cost: "$0.72", timeline: "Done", done: true },
+              { phase: "Equipment Database", what: "Process 70K equipment-captioned photos → structured records for ~100K service locations. Pilot proved 100% brand extraction on readable dataplates.", cost: "~$280", timeline: "TBD", done: false },
               { phase: "On-Device OCR", what: "On-device OCR in mobile app — every new dataplate auto-builds equipment record. Works offline.", cost: "Eng time", timeline: "TBD", done: false },
               { phase: "Classification Pipeline", what: "Classify all new photos as uploaded — equipment, gauge, damage, pool condition, etc.", cost: "~$1-6K/mo", timeline: "TBD", done: false },
               { phase: "Predictive Models", what: "Train on historical patterns — gauge pressure trends, water clarity, equipment condition", cost: "Eng time", timeline: "TBD", done: false },
@@ -464,7 +464,7 @@ export default function VisionPage() {
             {[
               { value: "Zero", label: "new behavior required from techs", sub: "They already take the photos. We just need AI to read them.", accent: "border-t-sk-mint" },
               { value: "211M+", label: "photos no competitor has", sub: "Growing by 6.3M/month. The data moat gets deeper every day.", accent: "border-t-sk-blue" },
-              { value: "$0.60", label: "to prove it all works", sub: "14 equipment extractions, 4 pilot use cases, 120 photos analyzed.", accent: "border-t-sk-sunrise" },
+              { value: "$0.72", label: "to prove it all works", sub: "4 pilot use cases, 120 photos analyzed — the AI works when it can see what it needs.", accent: "border-t-sk-sunrise" },
             ].map((item, i) => (
               <motion.div key={item.label} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}
                 className={`rounded-xl border-t-4 ${item.accent} bg-white/[0.06] p-4 backdrop-blur-sm sm:p-5`}>

@@ -121,79 +121,142 @@ export interface PilotResult {
   id: string;
   name: string;
   photosTested: number;
+  usablePhotos: number;
   accuracy: string;
+  accuracyOnUsable: string;
   verdict: "GO" | "DEFERRED" | "NO-GO";
+  howItWorked: string;
   summary: string;
   details: string[];
   cost: string;
+  whyGap?: string;
+  examplePhoto?: { url: string; caption: string; aiResult: string; match: boolean };
+  failPhoto?: { url: string; caption: string; aiResult: string; reason: string };
 }
 
 export const PILOT_RESULTS: PilotResult[] = [
   {
-    id: "classification",
-    name: "Photo Classification",
-    photosTested: 50,
-    accuracy: "~85%+",
+    id: "water-clarity",
+    name: "Water Clarity Scoring",
+    photosTested: 20,
+    usablePhotos: 19,
+    accuracy: "100%",
+    accuracyOnUsable: "100%",
     verdict: "GO",
-    summary: "AI correctly identifies visual content in ~85%+ of photos from Pools Plus.",
+    howItWorked: "We gave the AI a pool photo and asked \"score the water clarity 1–5.\" Then we checked if it aligned with the tech's caption — \"pool is clean\" should produce a 4 or 5.",
+    summary: "19 of 20 photos showed a pool. AI scored all of them correctly. Average clarity: 4.79/5.",
     details: [
-      "Keyword matching measured 62%, but manual review shows AI was right even when matcher said wrong",
-      "AI said \"pool_overview\" for a photo captioned \"Overall View/After\" — correct, just different framing",
-      "Works across basket, filter, equipment, gate, pool overview categories",
+      "95% of pool photos naturally contain enough signal — water fills the frame, no close-up needed",
+      "15 scored crystal clear (5/5), 4 scored mostly clear (4/5) — all matched caption tone",
+      "1 photo didn't show a pool — AI correctly flagged it rather than guessing",
+      "Average confidence: 0.94 — high and well-calibrated",
     ],
-    cost: "$0.20",
-  },
-  {
-    id: "equipment-ocr",
-    name: "Equipment Dataplate OCR",
-    photosTested: 33,
-    accuracy: "100% on dataplates",
-    verdict: "GO",
-    summary: "On actual dataplate photos: 100% accuracy. Extracted brand, model, serial from all tested.",
-    details: [
-      "Whirlpool: MOD WTW4816FW3, SER CE2505371 — 100% accurate",
-      "Hayward: MODEL# HSCTRACUHB, SERIAL# 21342508001753046 — 100% accurate",
-      "Weathered pump label (rotated 90°): P/N 011772, WF-24 1HP — still 100% accurate",
-      "On broader \"equipment\" photos: 17% had readable data — expected, most are photos OF equipment, not dataplates",
-    ],
-    cost: "$0.12",
+    cost: "$0.08",
+    examplePhoto: {
+      url: "https://storwebproduction.blob.core.windows.net/service-202602/bda9460ec5de4de8941cd77206ad83cb.jpg",
+      caption: "Photo of Pool",
+      aiResult: "Crystal Clear — 5/5 (0.95 confidence)",
+      match: true,
+    },
   },
   {
     id: "gauge-reading",
     name: "Pressure Gauge Reading",
     photosTested: 20,
-    accuracy: "70%",
+    usablePhotos: 19,
+    accuracy: "73.7%",
+    accuracyOnUsable: "74% (14/19)",
     verdict: "GO",
-    summary: "14 of 20 gauges readable. AI extracted PSI values from clean, dirty, and weathered gauges.",
+    howItWorked: "We gave the AI a photo of a filter gauge and asked \"what PSI does this read?\" Then we compared the reading against the actual needle position. Correct = within ±2 PSI.",
+    summary: "19 of 20 identified as gauges. 14 readings extracted. Clean gauges: 10/10. Dirty/weathered: 4/9.",
     details: [
-      "Also identified gauge condition (clean/dirty/weathered/foggy)",
-      "6 photos were not close-ups of gauges (too far, wrong subject)",
-      "Bezel text (\"START\" / \"CLEAN FILTER\") detected as bonus context",
-      "Right at threshold — specialized model would improve accuracy",
+      "Clean gauges: 100% accuracy (10/10) — when the face is readable, the AI reads it",
+      "Dirty gauges: 40% (2/5) — grime obscures the dial face",
+      "Weathered: 67% (2/3) — depends on how much text is still visible",
+      "AI reports low confidence when it can't read — useful for flagging gauges that need replacement",
     ],
     cost: "$0.08",
+    whyGap: "The gap isn't AI accuracy — it's gauge condition. Clean gauges read at 100%. Dirty and foggy gauges fail for the same reason a human would struggle: the dial face is obscured.",
+    examplePhoto: {
+      url: "https://storwebproduction.blob.core.windows.net/service-202603/dc06a9b25906482ba02f21fa50cc03dc.jpg",
+      caption: "Filter pressure is checked",
+      aiResult: "11 PSI, 0–60 scale, clean gauge (0.90 confidence)",
+      match: true,
+    },
+    failPhoto: {
+      url: "https://storwebproduction.blob.core.windows.net/service-202602/ceda777ac9db40329947446870586823.jpg",
+      caption: "Filter Pressure Recorded",
+      aiResult: "Could not read — dirty/blurry (0.30 confidence)",
+      reason: "Blurry image with obscured gauge face — AI correctly reported low confidence rather than guessing",
+    },
   },
   {
-    id: "water-clarity",
-    name: "Water Clarity Scoring",
-    photosTested: 20,
-    accuracy: "95%",
+    id: "equipment-ocr",
+    name: "Equipment Dataplate OCR",
+    photosTested: 30,
+    usablePhotos: 8,
+    accuracy: "62.5% overall",
+    accuracyOnUsable: "100% brand (8/8), 63% model (5/8)",
     verdict: "GO",
-    summary: "19 of 20 were pool photos. Average clarity: 4.8/5. All \"pool is clean\" captions scored 4-5.",
+    howItWorked: "We gave the AI a work order photo and asked \"read the brand, model, and serial from the dataplate.\" Then we verified against what a human could read on the same plate.",
+    summary: "Only 8 of 30 work order photos contained a visible dataplate. On those 8: brand extraction was 100%.",
     details: [
-      "AI correctly identified pool types, screen enclosures, and visible issues",
-      "Scoring on 1-5 scale is consistent and reliable",
-      "Could build per-pool water quality trends over time",
+      "Brand detection: 100% (8/8) — Jandy, Hayward, Pentair, HeatPro, Super Pro all identified",
+      "Model number: 62.5% (5/8) — smaller text, sometimes partially obscured",
+      "Serial number: 25% (2/8) — smallest text, often weathered or angled",
+      "Most photos show the whole pump/heater, not a close-up of the label — a capture guidance problem, not an AI problem",
     ],
-    cost: "$0.08",
+    cost: "$0.12",
+    whyGap: "The AI performed well on every readable dataplate. The issue is that only 27% of work order photos show the label at all. Techs photograph the whole equipment. Guided capture (\"take a close-up of the dataplate\") would raise yield without any AI improvement.",
+    examplePhoto: {
+      url: "https://storwebproduction.blob.core.windows.net/work-orders-202602/5e2d1d42f1244ee69e0364372e3da168.jpg",
+      caption: "Model number off pump",
+      aiResult: "Jandy VSPHP270DV2A — Variable speed pump, 2.70 THP, 230/115V (0.95 confidence)",
+      match: true,
+    },
+  },
+  {
+    id: "classification",
+    name: "Photo Classification",
+    photosTested: 50,
+    usablePhotos: 50,
+    accuracy: "58%",
+    accuracyOnUsable: "58% (29/50)",
+    verdict: "NO-GO",
+    howItWorked: "We gave the AI a service photo with the caption removed and asked \"what category is this?\" (basket, gauge, pool overview, chemistry, gate, etc.) Then we checked if the AI's category matched the tech's original caption.",
+    summary: "29 of 50 correct. Visual categories worked well (gate 100%, gauge 100%, pool 82%). Task categories failed (chemistry 38%, after photo 0%).",
+    details: [
+      "Gate security: 100% (3/3), Pressure gauge: 100% (3/3), Pool overview: 82% (14/17)",
+      "Basket cleaning: 50% (6/12) — AI saw equipment in frame, classified by visual content not task",
+      "Chemistry reading: 38% (3/8) — test strips look similar to other equipment photos",
+      "After photo: 0% (0/6) — impossible to know a photo is \"after\" without seeing the \"before\"",
+      "Average confidence 0.92 despite 58% accuracy — model is over-confident on ambiguous categories",
+    ],
+    cost: "$0.20",
+    whyGap: "Not a photo quality issue — a taxonomy problem. The AI classifies by what it sees (a pump with a gauge), but the tech's caption reflects what they were doing (cleaning the basket). Simplifying the taxonomy or pairing with checklist context would improve results.",
+    examplePhoto: {
+      url: "https://storwebproduction.blob.core.windows.net/service-202601/0bebadfdfce045e59ee33c610af691ba.jpg",
+      caption: "Skimmer basket empty",
+      aiResult: "basket_cleaning (0.90 confidence)",
+      match: true,
+    },
+    failPhoto: {
+      url: "https://storwebproduction.blob.core.windows.net/service-202603/50300a7ea4ae47619dd3c934fa983233.jpg",
+      caption: "Pump basket empty",
+      aiResult: "pressure_gauge (0.95 confidence) — WRONG",
+      reason: "AI saw a gauge in the frame and classified by the most visually prominent object, not the tech's intent",
+    },
   },
   {
     id: "before-after",
     name: "Before / After Comparison",
     photosTested: 0,
+    usablePhotos: 0,
     accuracy: "N/A",
+    accuracyOnUsable: "N/A",
     verdict: "DEFERRED",
-    summary: "Database query timed out (self-join on 189M rows). Need optimized query or pre-computed pairs.",
+    howItWorked: "Planned: give the AI a before/after photo pair and ask \"what work was performed?\" Compare against the work order description.",
+    summary: "Not yet executed. Database query to find photo pairs timed out (self-join on 189M rows).",
     details: [
       "1.16M explicit pair candidates (484K \"Before\" + 675K \"After\" captions)",
       "Need to pre-compute pairs using RouteStopId + Sequence ordering",
@@ -203,8 +266,15 @@ export const PILOT_RESULTS: PilotResult[] = [
   },
 ];
 
-export const PILOT_TOTAL_COST = "$0.48";
+export const PILOT_TOTAL_COST = "$0.72";
 export const PILOT_TOTAL_PHOTOS = 120;
+
+export const PHOTO_QUALITY_TABLE = [
+  { useCase: "Water Clarity", usableSignal: "95% (19/20)", aiAccuracy: "100%", why: "Any pool photo works — water fills the frame" },
+  { useCase: "Gauge Reading", usableSignal: "95% (19/20)", aiAccuracy: "74%", why: "Techs photograph gauges intentionally; dirty gauges reduce readability" },
+  { useCase: "Equipment OCR", usableSignal: "27% (8/30)", aiAccuracy: "100% brand", why: "Most photos show full equipment, not the label close-up" },
+  { useCase: "Classification", usableSignal: "100% (50/50)", aiAccuracy: "58%", why: "Not photo quality — taxonomy overlap problem" },
+];
 
 /* ─── Coverage Stats ─────────────────────────────────────── */
 

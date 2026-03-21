@@ -4,10 +4,12 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   CheckCircle2, Clock, AlertTriangle, DollarSign, Camera, Zap, Target,
+  Beaker, Eye, ImageIcon, XCircle,
 } from "lucide-react";
+import Image from "next/image";
 import { AnimatedCounter } from "@/components/counter";
 import { NextPage } from "@/components/next-page";
-import { PILOT_RESULTS, PILOT_TOTAL_COST, PILOT_TOTAL_PHOTOS } from "@/lib/photo-data";
+import { PILOT_RESULTS, PILOT_TOTAL_COST, PILOT_TOTAL_PHOTOS, PHOTO_QUALITY_TABLE } from "@/lib/photo-data";
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -20,9 +22,9 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 }
 
 const verdictConfig = {
-  GO: { bg: "bg-sk-moss-100", text: "text-sk-moss-700", border: "border-l-sk-moss-700", icon: CheckCircle2, label: "GO", pulse: "shadow-sk-moss-700/20" },
+  GO: { bg: "bg-sk-moss-100", text: "text-sk-moss-700", border: "border-l-sk-moss-700", icon: CheckCircle2, label: "PASS", pulse: "shadow-sk-moss-700/20" },
   DEFERRED: { bg: "bg-sk-sunrise-100", text: "text-sk-sunrise", border: "border-l-sk-sunrise", icon: Clock, label: "DEFERRED", pulse: "" },
-  "NO-GO": { bg: "bg-red-50", text: "text-red-600", border: "border-l-red-500", icon: AlertTriangle, label: "NO-GO", pulse: "" },
+  "NO-GO": { bg: "bg-red-50", text: "text-red-600", border: "border-l-red-500", icon: AlertTriangle, label: "BELOW TARGET", pulse: "" },
 };
 
 export default function PilotPage() {
@@ -54,20 +56,20 @@ export default function PilotPage() {
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
             className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-lg">
-            Before building anything, we tested: does AI actually work on real pool service photos? We ran{" "}
-            <span className="font-semibold text-white/90">{PILOT_TOTAL_PHOTOS} real production photos</span>{" "}
-            through GPT-4o Vision for{" "}
-            <span className="font-semibold text-sk-mint">{PILOT_TOTAL_COST}</span>.
+            We tested whether AI can extract useful data from real pool service photos —{" "}
+            <span className="font-semibold text-white/90">{PILOT_TOTAL_PHOTOS} production photos</span>{" "}
+            for{" "}
+            <span className="font-semibold text-sk-mint">{PILOT_TOTAL_COST}</span> total.
             Not a vendor demo — real photos from real techs.
           </motion.p>
 
           {/* Summary stats */}
           <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:gap-3">
             {[
-              { icon: Zap, label: "Validated", value: `${goCount} of 5` },
+              { icon: Zap, label: "Passed", value: `${goCount} of 5` },
               { icon: Camera, label: "Photos Tested", value: String(PILOT_TOTAL_PHOTOS) },
               { icon: DollarSign, label: "Total Cost", value: PILOT_TOTAL_COST },
-              { icon: Target, label: "Projected 1K", value: "~$4" },
+              { icon: Target, label: "Projected 1K", value: "~$6" },
             ].map((s, i) => (
               <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }}
                 className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 backdrop-blur-sm sm:px-5 sm:py-3">
@@ -82,26 +84,103 @@ export default function PilotPage() {
         </div>
       </section>
 
-      {/* ── What This Proves ─────────────────────────────── */}
+      {/* ── How We Validated ────────────────────────────────── */}
       <Reveal>
-        <section className="rounded-xl border border-sk-dark-200 bg-gradient-to-r from-sk-blue-100 via-white to-sk-mint-100 p-5 sm:p-6">
-          <h2 className="mb-4 text-base font-bold text-sk-dark-900 sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
-            What This Proves
+        <section className="rounded-xl border border-sk-blue-200 bg-gradient-to-br from-sk-blue-100 via-white to-sk-mint-100 p-5 sm:p-8">
+          <h2 className="mb-3 text-lg font-bold text-sk-dark-900 sm:text-xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            How We Validated
           </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+          <p className="mb-5 text-sm leading-relaxed text-sk-text-medium sm:text-base">
+            We selected one of the Skimmer pros with a <span className="font-semibold text-sk-text">98.1% caption rate</span> across
+            132,000+ photos — the closest thing to human-labeled ground truth in our dataset. Captions were written by field techs
+            via checklist items. For each pilot, we <span className="font-semibold text-sk-text">stripped the caption</span>, sent just
+            the photo to the AI, and compared its output against what the tech originally wrote.
+            The AI never saw the answer.
+          </p>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { result: "Classification works (85%+)", soWhat: "We can categorize the 80% of photos that have no caption — turning invisible data into searchable, structured categories.", accent: "border-l-sk-blue" },
-              { result: "Equipment OCR works (100%)", soWhat: "We can read brand, model, and serial from dataplates — meaning we can build an equipment database from photos techs already take.", accent: "border-l-sk-moss-700" },
-              { result: "Gauge reading works (70%)", soWhat: "We can extract PSI values from pressure gauge photos — opening the door to automated filter pressure tracking over time.", accent: "border-l-sk-sunrise" },
-              { result: "Water clarity scoring works (95%)", soWhat: "We can assess pool condition from a photo — enabling water quality trends and early detection of algae or clarity issues.", accent: "border-l-sk-orchid" },
-            ].map((item, i) => (
-              <Reveal key={item.result} delay={i * 0.08}>
-                <div className={`rounded-lg border-l-4 ${item.accent} bg-white p-4 shadow-sm`}>
-                  <div className="text-xs font-bold text-sk-dark sm:text-sm">{item.result}</div>
-                  <p className="mt-1 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">{item.soWhat}</p>
+              { step: "1", title: "Select Photos", desc: "Pull real production photos from a company with high caption rates" },
+              { step: "2", title: "Strip Labels", desc: "Remove all captions — AI sees only the raw image" },
+              { step: "3", title: "AI Analyzes", desc: "Claude Vision classifies, reads, or scores each photo blind" },
+              { step: "4", title: "Compare", desc: "Match AI output against the tech's original caption" },
+            ].map((s, i) => (
+              <Reveal key={s.step} delay={i * 0.08}>
+                <div className="rounded-lg border border-sk-blue-200 bg-white p-3 sm:p-4">
+                  <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-full bg-sk-dark text-xs font-bold text-white">{s.step}</div>
+                  <div className="text-xs font-bold text-sk-dark-800 sm:text-sm">{s.title}</div>
+                  <p className="mt-1 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">{s.desc}</p>
                 </div>
               </Reveal>
             ))}
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ── Core Finding ───────────────────────────────────── */}
+      <Reveal>
+        <section className="rounded-xl border-2 border-sk-blue-300 bg-gradient-to-r from-sk-mint-100 to-sk-blue-100 p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-sk-dark text-white">
+              <Eye className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-sk-dark-800 sm:text-base" style={{ fontFamily: "var(--font-outfit)" }}>The Core Finding</h3>
+              <p className="mt-1 text-sm leading-relaxed text-sk-text sm:text-base">
+                <span className="font-semibold">When the photo contains what the AI needs to see, accuracy is high across all use cases.</span>{" "}
+                The difference between pilots isn&apos;t AI capability — it&apos;s how often production photos naturally contain the right signal.
+                A pool photo almost always shows water (95%), but an equipment photo rarely shows the dataplate close-up (27%).
+                The variable is photo quality and framing, not AI accuracy.
+              </p>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ── Photo Quality vs AI Accuracy Table ──────────── */}
+      <Reveal>
+        <section className="overflow-hidden rounded-xl border border-sk-gray-100 bg-white shadow-sm">
+          <div className="border-b border-sk-gray-100 px-4 py-3 sm:px-6 sm:py-4">
+            <h2 className="text-base font-bold text-sk-dark-900 sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+              Photo Quality vs. AI Accuracy
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-sk-blue-200 bg-sk-blue-100/50">
+                  <th className="px-4 py-3 text-left font-semibold text-sk-dark sm:px-6" style={{ fontFamily: "var(--font-outfit)" }}>Use Case</th>
+                  <th className="px-4 py-3 text-center font-semibold text-sk-dark sm:px-6" style={{ fontFamily: "var(--font-outfit)" }}>Photos with usable signal</th>
+                  <th className="px-4 py-3 text-center font-semibold text-sk-dark sm:px-6" style={{ fontFamily: "var(--font-outfit)" }}>AI accuracy on those</th>
+                  <th className="hidden px-4 py-3 text-left font-semibold text-sk-dark sm:table-cell sm:px-6" style={{ fontFamily: "var(--font-outfit)" }}>Why</th>
+                </tr>
+              </thead>
+              <tbody>
+                {PHOTO_QUALITY_TABLE.map((row, i) => (
+                  <tr key={row.useCase} className={i < PHOTO_QUALITY_TABLE.length - 1 ? "border-b border-sk-gray-100" : ""}>
+                    <td className="px-4 py-3 font-medium text-sk-text sm:px-6">{row.useCase}</td>
+                    <td className="px-4 py-3 text-center sm:px-6">
+                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        row.usableSignal.startsWith("9") || row.usableSignal.startsWith("100")
+                          ? "bg-sk-moss-100 text-sk-moss-700"
+                          : "bg-sk-sunrise-100 text-sk-sunrise"
+                      }`}>
+                        {row.usableSignal}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center font-bold sm:px-6">
+                      <span className={
+                        row.aiAccuracy.includes("100") ? "text-sk-moss-700"
+                          : row.aiAccuracy.includes("74") ? "text-sk-sunrise"
+                          : "text-red-500"
+                      }>
+                        {row.aiAccuracy}
+                      </span>
+                    </td>
+                    <td className="hidden px-4 py-3 text-xs text-sk-text-medium sm:table-cell sm:px-6">{row.why}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
       </Reveal>
@@ -135,6 +214,7 @@ export default function PilotPage() {
                   </div>
                   <div className="flex flex-wrap items-center gap-3 text-[10px] text-sk-text-medium sm:gap-5 sm:text-sm">
                     <span><span className="font-semibold text-sk-text">{pilot.photosTested}</span> photos</span>
+                    <span>Usable: <span className="font-semibold text-sk-text">{pilot.usablePhotos}/{pilot.photosTested}</span></span>
                     <span>Accuracy: <span className="font-semibold text-sk-text">{pilot.accuracy}</span></span>
                     <span>Cost: <span className="font-semibold text-sk-text">{pilot.cost}</span></span>
                   </div>
@@ -142,6 +222,17 @@ export default function PilotPage() {
 
                 {/* Body */}
                 <div className="px-4 py-3 sm:px-6 sm:py-4">
+                  {/* How it worked */}
+                  <div className="mb-4 rounded-lg bg-sk-blue-100 p-3 sm:p-4">
+                    <div className="flex items-start gap-2.5">
+                      <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-sk-dark text-[10px] font-bold text-white">?</div>
+                      <p className="text-xs leading-relaxed text-sk-dark-800 sm:text-sm">
+                        <span className="font-semibold">How it worked: </span>
+                        {pilot.howItWorked}
+                      </p>
+                    </div>
+                  </div>
+
                   <p className="text-xs text-sk-text sm:text-sm">{pilot.summary}</p>
                   <ul className="mt-2.5 space-y-1.5 sm:mt-3">
                     {pilot.details.map((d, i) => (
@@ -151,6 +242,68 @@ export default function PilotPage() {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Why gap explanation */}
+                  {pilot.whyGap && (
+                    <div className="mt-3 rounded-lg bg-sk-sunrise-100/60 p-3">
+                      <p className="text-xs text-sk-text sm:text-sm">
+                        <span className="font-semibold">Why the gap: </span>
+                        {pilot.whyGap}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Example photos */}
+                  {pilot.examplePhoto && (
+                    <div className="mt-4 space-y-3">
+                      <div className="flex items-center gap-3 rounded-lg border border-sk-gray-100 p-3">
+                        <div className="relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-md bg-sk-gray-100 sm:h-24 sm:w-36">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={pilot.examplePhoto.url}
+                            alt={pilot.examplePhoto.caption}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap gap-1.5">
+                            <span className="inline-block rounded bg-sk-blue-100 px-2 py-0.5 text-[10px] font-semibold text-sk-dark sm:text-xs">
+                              Tech: &ldquo;{pilot.examplePhoto.caption}&rdquo;
+                            </span>
+                            <span className="inline-block rounded bg-sk-moss-100 px-2 py-0.5 text-[10px] font-semibold text-sk-moss-700 sm:text-xs">
+                              AI: {pilot.examplePhoto.aiResult}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {pilot.failPhoto && (
+                        <div className="flex items-center gap-3 rounded-lg border border-red-100 bg-red-50/30 p-3">
+                          <div className="relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-md bg-sk-gray-100 sm:h-24 sm:w-36">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={pilot.failPhoto.url}
+                              alt={pilot.failPhoto.caption}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap gap-1.5">
+                              <span className="inline-block rounded bg-sk-blue-100 px-2 py-0.5 text-[10px] font-semibold text-sk-dark sm:text-xs">
+                                Tech: &ldquo;{pilot.failPhoto.caption}&rdquo;
+                              </span>
+                              <span className="inline-block rounded bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-600 sm:text-xs">
+                                AI: {pilot.failPhoto.aiResult}
+                              </span>
+                            </div>
+                            <p className="mt-1 text-[10px] text-sk-text-medium sm:text-xs">{pilot.failPhoto.reason}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </Reveal>
@@ -158,12 +311,37 @@ export default function PilotPage() {
         })}
       </section>
 
+      {/* ── What This Proves ─────────────────────────────── */}
+      <Reveal>
+        <section className="rounded-xl border border-sk-dark-200 bg-gradient-to-r from-sk-blue-100 via-white to-sk-mint-100 p-5 sm:p-6">
+          <h2 className="mb-4 text-base font-bold text-sk-dark-900 sm:text-lg" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            What This Proves
+          </h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+            {[
+              { result: "The AI works — photo quality is the variable", soWhat: "When the photo contains the right signal, accuracy is high across every use case: 100% for water clarity, 100% for brand detection, 100% for clean gauge reads.", accent: "border-l-sk-blue" },
+              { result: "Water clarity is the easiest win", soWhat: "Any photo that shows a pool gives the AI enough to work with (95% of pool photos). No special framing or close-up needed. 100% accuracy.", accent: "border-l-sk-moss-700" },
+              { result: "Equipment OCR is an AI success with a capture problem", soWhat: "Brand detection was 100% on every readable dataplate. The issue: only 27% of work order photos show the label. Guided capture solves this without any AI improvement.", accent: "border-l-sk-sunrise" },
+              { result: "Classification needs a different approach", soWhat: "Visual categories work (gauge, pool, gate). Task categories require knowing what the tech intended, not just what the camera sees. Simpler taxonomy or checklist pairing would help.", accent: "border-l-sk-orchid" },
+            ].map((item, i) => (
+              <Reveal key={item.result} delay={i * 0.08}>
+                <div className={`rounded-lg border-l-4 ${item.accent} bg-white p-4 shadow-sm`}>
+                  <div className="text-xs font-bold text-sk-dark sm:text-sm">{item.result}</div>
+                  <p className="mt-1 text-[10px] leading-relaxed text-sk-text-medium sm:text-xs">{item.soWhat}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
       {/* ── Bottom Line ──────────────────────────────────── */}
       <Reveal>
         <section className="rounded-xl border border-sk-dark-200 bg-gradient-to-r from-sk-blue-100 via-white to-sk-moss-100 p-5 sm:p-6">
           <p className="text-xs text-sk-text sm:text-sm">
-            <span className="font-bold">The technology works.</span> 4 of 5 use cases validated on real production photos for {PILOT_TOTAL_COST} total.
-            Now see what AI actually extracts from these photos — and what we can build with it.
+            <span className="font-bold">The technology works when it can see what it needs.</span>{" "}
+            3 of 4 completed pilots proved the AI is accurate on usable photos.
+            The path to production is improving what the camera captures — through guided prompts and checklist integration — not improving the AI.
           </p>
         </section>
       </Reveal>
@@ -177,7 +355,7 @@ export default function PilotPage() {
 
       {/* Footer */}
       <footer className="border-t border-sk-gray-100 pt-4 text-center text-[10px] text-sk-text-disabled sm:pt-6 sm:text-xs">
-        Pilot conducted March 17, 2026 using GPT-4o Vision on Skimmer production photos
+        Pilot conducted March 17, 2026 using Claude Vision API on Skimmer production photos &middot; Total cost: {PILOT_TOTAL_COST}
       </footer>
     </div>
   );
