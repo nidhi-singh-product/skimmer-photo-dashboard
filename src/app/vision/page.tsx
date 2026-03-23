@@ -456,6 +456,141 @@ export default function VisionPage() {
         </section>
       </Reveal>
 
+      {/* ── 3-Stage Equipment Rollout ──────────────────────── */}
+      <Reveal>
+        <section>
+          <h2 className="mb-2 text-lg font-bold text-sk-dark-900 sm:text-2xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+            Equipment Intelligence: 3-Stage Rollout
+          </h2>
+          <p className="mb-5 text-xs text-sk-text-medium sm:mb-6 sm:text-sm">
+            The equipment database doesn&apos;t ship all at once. Each stage adds customer value incrementally.
+          </p>
+          <div className="space-y-5 sm:space-y-6">
+            {/* Stage 1 */}
+            <div className="overflow-hidden rounded-xl border border-sk-gray-100 bg-white shadow-sm">
+              <div className="flex flex-wrap items-center gap-3 border-b border-sk-gray-100 bg-sk-blue-100 px-5 py-3 sm:px-6 sm:py-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sk-dark text-sm font-bold text-white">1</div>
+                <div><h3 className="text-sm font-bold text-sk-dark-900 sm:text-base" style={{ fontFamily: "var(--font-outfit)" }}>Build the Equipment Database</h3><p className="text-[10px] text-sk-text-medium sm:text-xs">Internal only &middot; ~$280 &middot; No product changes needed</p></div>
+                <span className="ml-auto rounded-full bg-sk-blue px-3 py-1 text-[10px] font-bold text-white sm:text-xs">Next Step</span>
+              </div>
+              <div className="p-5 sm:p-6">
+                <p className="mb-4 text-xs text-sk-text-medium sm:text-sm">Process 70K equipment-captioned photos through AI OCR. The output is a structured database table — brand, model, serial, manufacture date — linked to service locations. This is <span className="font-semibold text-sk-text">the foundation everything else builds on.</span></p>
+                <div className="mb-4 overflow-hidden rounded-lg border border-gray-300 shadow-sm">
+                  <div className="flex items-center gap-2 border-b border-gray-300 bg-[#2d2d2d] px-3 py-1.5"><div className="flex gap-1"><div className="h-2 w-2 rounded-full bg-red-400" /><div className="h-2 w-2 rounded-full bg-yellow-400" /><div className="h-2 w-2 rounded-full bg-green-400" /></div><span className="text-[9px] text-gray-400 sm:text-[10px]">skimmer-prod_db — Query Results</span></div>
+                  <div className="border-b border-gray-700 bg-[#1e1e1e] px-4 py-2"><span className="font-mono text-[10px] sm:text-xs"><span className="text-[#569cd6]">SELECT</span> <span className="text-[#9cdcfe]">*</span> <span className="text-[#569cd6]">FROM</span> <span className="text-[#4ec9b0]">EquipmentRecords</span> <span className="text-[#569cd6]">WHERE</span> <span className="text-[#9cdcfe]">CompanyId</span> <span className="text-[#d4d4d4]">=</span> <span className="text-[#ce9178]">&apos;4953e493...&apos;</span></span></div>
+                  <div className="overflow-x-auto bg-[#1e1e1e]">
+                    <table className="w-full font-mono text-[10px] sm:text-xs">
+                      <thead><tr className="border-b border-gray-700 bg-[#252526] text-left">{["ServiceLocationId","Brand","Model","Serial","Type","MfgDate","Confidence"].map(h => (<th key={h} className="px-3 py-1.5 font-semibold text-[#569cd6]">{h}</th>))}</tr></thead>
+                      <tbody>{[{loc:"SL-84721",brand:"Jandy",model:"VSPHP270DV2A",serial:"—",type:"VS Pump",date:"NULL",conf:"0.95"},{loc:"SL-84721",brand:"Hayward",model:"T-CELL-940",serial:"2231124186",type:"Salt Cell",date:"NULL",conf:"0.85"},{loc:"SL-91203",brand:"Jandy",model:"JXI400NN",serial:"MTE C02 0503...",type:"Gas Heater",date:"NULL",conf:"0.99"},{loc:"SL-55089",brand:"Watkins",model:"Rhythm Pearl",serial:"RHY1R3T29",type:"Hot Tub",date:"2012-11-17",conf:"0.95"},{loc:"SL-72334",brand:"Century",model:"M48AB4A34A04",serial:"S042120004844",type:"Pump Motor",date:"NULL",conf:"0.95"}].map((r,i) => (<tr key={i} className={`border-t border-gray-800 ${i%2===0?"bg-[#1e1e1e]":"bg-[#252526]"}`}><td className="px-3 py-1.5 text-[#9cdcfe]">{r.loc}</td><td className="px-3 py-1.5 font-semibold text-[#dcdcaa]">{r.brand}</td><td className="px-3 py-1.5 text-[#d4d4d4]">{r.model}</td><td className="px-3 py-1.5 text-[#808080]">{r.serial}</td><td className="px-3 py-1.5 text-[#ce9178]">{r.type}</td><td className="px-3 py-1.5 text-[#808080]">{r.date}</td><td className="px-3 py-1.5"><span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${parseFloat(r.conf)>=0.9?"bg-[#2d4a2d] text-[#6a9955]":"bg-[#4a3d2d] text-[#d7ba7d]"}`}>{r.conf}</span></td></tr>))}</tbody>
+                    </table>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-gray-300 bg-[#2d2d2d] px-3 py-1.5 text-[9px] text-gray-400 sm:text-[10px]"><span>5 rows returned (0.023 sec)</span><span>Projected: ~19,000–35,000 records from 70K photos</span></div>
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">{[{val:"70K",lbl:"equipment photos to process"},{val:"19-35K",lbl:"equipment records projected"},{val:"~100K",lbl:"service locations covered"}].map(s => (<div key={s.val} className="rounded-lg bg-sk-blue-100 p-3 text-center"><div className="text-lg font-bold text-sk-dark" style={{fontFamily:"var(--font-outfit)"}}>{s.val}</div><div className="text-[10px] text-sk-text-medium sm:text-xs">{s.lbl}</div></div>))}</div>
+              </div>
+            </div>
+            {/* Stage 2 */}
+            <div className="overflow-hidden rounded-xl border border-sk-gray-100 bg-white shadow-sm">
+              <div className="flex flex-wrap items-center gap-3 border-b border-sk-gray-100 bg-sk-moss-100 px-5 py-3 sm:px-6 sm:py-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sk-moss-700 text-sm font-bold text-white">2</div>
+                <div><h3 className="text-sm font-bold text-sk-dark-900 sm:text-base" style={{fontFamily:"var(--font-outfit)"}}>Admin Equipment View (Web App)</h3><p className="text-[10px] text-sk-text-medium sm:text-xs">Customer-facing &middot; Engineering required &middot; Admins see equipment per customer</p></div>
+                <span className="ml-auto rounded-full bg-sk-moss-700/10 px-3 py-1 text-[10px] font-bold text-sk-moss-700 sm:text-xs">Future</span>
+              </div>
+              <div className="p-5 sm:p-6">
+                <p className="mb-4 text-xs text-sk-text-medium sm:text-sm">Surface the database where admins already work — the Skimmer web app. A new &ldquo;Equipment&rdquo; section shows auto-populated profiles per customer, filterable and searchable.</p>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <div><div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-sk-text-disabled sm:text-xs">Today: No equipment visibility</div><div className="overflow-hidden rounded-lg border-2 border-red-200 shadow-sm">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/skimmer-customers.png" alt="Current Skimmer" className="w-full" loading="lazy" /><div className="bg-red-50 px-3 py-2"><p className="text-[10px] text-red-600 sm:text-xs">No equipment section. Admins search through work order photos or call the tech.</p></div></div></div>
+                  <div><div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-sk-text-disabled sm:text-xs">Future: Equipment auto-populated</div><div className="overflow-hidden rounded-lg border-2 border-sk-moss-700/30 bg-white shadow-sm"><div className="flex items-center gap-1.5 border-b border-gray-200 bg-gray-100 px-3 py-1.5"><div className="flex gap-1"><div className="h-2 w-2 rounded-full bg-red-400" /><div className="h-2 w-2 rounded-full bg-yellow-400" /><div className="h-2 w-2 rounded-full bg-green-400" /></div><div className="ml-2 flex-1 rounded bg-white px-2 py-0.5 text-[8px] text-gray-400 sm:text-[9px]">app.getskimmer.com/Equipment</div></div><div className="flex" style={{minHeight:"300px"}}><div className="w-32 flex-shrink-0 sm:w-36" style={{background:"linear-gradient(180deg,#3a8fd4 0%,#2a6496 100%)"}}><div className="border-b border-white/10 px-3 py-2"><div className="text-[10px] font-bold tracking-wide text-white sm:text-xs">SKIMMER</div></div><div className="px-1.5 py-1 text-[8px] sm:text-[9px]">{["Dashboard","Customers","Schedule","Routes","Work Orders","Quotes"].map(n=>(<div key={n} className="rounded px-2 py-1 text-white/60">{n}</div>))}<div className="mt-0.5 rounded bg-white/20 px-2 py-1 font-bold text-white">Equipment</div>{["Jobs","Billing","Reports","Settings"].map(n=>(<div key={n} className="rounded px-2 py-1 text-white/60">{n}</div>))}</div></div><div className="flex-1 bg-[#f5f7fa]"><div className="flex items-center justify-between border-b border-gray-200 bg-white px-3 py-1.5 sm:px-4"><span className="text-[9px] text-gray-500 sm:text-[10px]">☰ nidhi admin</span><div className="flex gap-2 text-[8px] text-gray-400 sm:text-[9px]"><span>Earn $150</span><span>Support</span><span>Log out</span></div></div><div className="px-3 py-2 sm:px-4 sm:py-3"><div className="mb-2 flex items-center justify-between"><div className="text-[10px] font-bold text-gray-800 sm:text-xs">Equipment (4)</div><div className="rounded bg-[#5cb85c] px-2 py-0.5 text-[8px] font-bold text-white sm:text-[9px]">+ Add Equipment</div></div><div className="mb-2 flex gap-2"><div className="flex-1 rounded border border-gray-300 bg-white px-2 py-1 text-[8px] text-gray-400 sm:text-[9px]">Search equipment...</div><div className="rounded border border-gray-300 bg-white px-2 py-1 text-[8px] text-gray-600 sm:text-[9px]">Customer: <span className="font-bold">Barry Allen</span> ▾</div><div className="rounded border border-gray-300 bg-white px-2 py-1 text-[8px] text-gray-600 sm:text-[9px]">All Types ▾</div></div><div className="overflow-hidden rounded border border-gray-200 bg-white"><table className="w-full text-[8px] sm:text-[9px]"><thead><tr className="border-b border-gray-200 bg-gray-50">{["Equipment","Model","Age","Status","Action"].map(h=>(<th key={h} className="px-2 py-1.5 text-left font-semibold text-gray-500">{h}</th>))}</tr></thead><tbody>{[{name:"Pentair VS Pump",model:"IntelliFlo VSF",age:"5.0 yr",status:"Good",sc:"bg-green-100 text-green-700"},{name:"Hayward DE Filter",model:"ProGrid DE6020",age:"6.8 yr",status:"Aging",sc:"bg-amber-100 text-amber-700"},{name:"Jandy Gas Heater",model:"JXi 400K BTU",age:"6.2 yr",status:"Replace Soon",sc:"bg-red-100 text-red-700"},{name:"Hayward Salt Cell",model:"T-CELL-940",age:"4.0 yr",status:"Aging",sc:"bg-amber-100 text-amber-700"}].map((eq,i)=>(<tr key={i} className="border-b border-gray-100 last:border-0"><td className="px-2 py-1.5 font-bold text-gray-800">{eq.name}</td><td className="px-2 py-1.5 font-mono text-gray-600">{eq.model}</td><td className="px-2 py-1.5 text-gray-600">{eq.age}</td><td className="px-2 py-1.5"><span className={`rounded px-1.5 py-0.5 text-[7px] font-bold sm:text-[8px] ${eq.sc}`}>{eq.status}</span></td><td className="px-2 py-1.5 text-gray-400">✏️ 🗑</td></tr>))}</tbody></table></div><div className="mt-1.5 text-[7px] text-gray-400 sm:text-[8px]">Auto-populated from photos via AI OCR</div></div></div></div><div className="bg-sk-moss-100 px-3 py-2"><p className="text-[10px] text-sk-moss-700 sm:text-xs">New &ldquo;Equipment&rdquo; in sidebar. Filter by customer. No manual entry.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+            {/* Stage 3 */}
+            <div className="overflow-hidden rounded-xl border border-sk-gray-100 bg-white shadow-sm">
+              <div className="flex flex-wrap items-center gap-3 border-b border-sk-gray-100 bg-sk-sunrise-100 px-5 py-3 sm:px-6 sm:py-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sk-sunrise text-sm font-bold text-white">3</div>
+                <div><h3 className="text-sm font-bold text-sk-dark-900 sm:text-base" style={{fontFamily:"var(--font-outfit)"}}>Mobile On-Device OCR</h3><p className="text-[10px] text-sk-text-medium sm:text-xs">Field tech value &middot; Q3 2026 &middot; $0/month &middot; Works offline</p></div>
+                <span className="ml-auto rounded-full bg-sk-sunrise/10 px-3 py-1 text-[10px] font-bold text-sk-sunrise sm:text-xs">Q3 2026</span>
+              </div>
+              <div className="p-5 sm:p-6">
+                <p className="mb-4 text-xs text-sk-text-medium sm:text-sm">Tech points their phone at a dataplate, and the app <span className="font-semibold text-sk-text">instantly reads brand, model, and serial</span>. On-device (Apple Vision / Google ML Kit) — free, offline.</p>
+                <div className="flex justify-center"><div className="grid w-full max-w-2xl grid-cols-3 gap-3 sm:gap-4">
+                  <Reveal delay={0.1}><div><div className="overflow-hidden rounded-2xl bg-sk-dark-900 shadow-lg" style={{aspectRatio:"9/16",maxHeight:"240px"}}><div className="flex items-center justify-center border-b border-white/10 py-1.5"><div className="h-1 w-8 rounded-full bg-white/20" /></div><div className="flex flex-col items-center justify-center px-3 py-6 text-center"><div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-sk-blue/20 text-2xl">📷</div><div className="text-[10px] font-bold text-white sm:text-xs">Scan Equipment</div><div className="mt-1 text-[8px] text-white/40 sm:text-[9px]">Point at dataplate</div></div></div><div className="mt-2 text-center"><div className="text-[10px] font-bold text-sk-text sm:text-xs">Tech opens camera</div></div></div></Reveal>
+                  <Reveal delay={0.2}><div><div className="overflow-hidden rounded-2xl bg-sk-dark-900 shadow-lg" style={{aspectRatio:"9/16",maxHeight:"240px"}}><div className="flex items-center justify-center border-b border-white/10 py-1.5"><div className="h-1 w-8 rounded-full bg-white/20" /></div><div className="space-y-1.5 px-2 py-4 sm:px-3">{[{l:"Brand",v:"Pentair"},{l:"Model",v:"IntelliFlo VSF"},{l:"Serial",v:"PP2024-VS-00847"}].map(f=>(<div key={f.l} className="rounded bg-sk-moss-700/20 px-2 py-1"><div className="text-[8px] text-white/50">{f.l}</div><div className="text-[10px] font-bold text-sk-moss sm:text-xs">{f.v}</div></div>))}</div></div><div className="mt-2 text-center"><div className="text-[10px] font-bold text-sk-text sm:text-xs">OCR reads instantly</div></div></div></Reveal>
+                  <Reveal delay={0.3}><div><div className="overflow-hidden rounded-2xl bg-sk-dark-900 shadow-lg" style={{aspectRatio:"9/16",maxHeight:"240px"}}><div className="flex items-center justify-center border-b border-white/10 py-1.5"><div className="h-1 w-8 rounded-full bg-white/20" /></div><div className="flex flex-col items-center justify-center px-3 py-6 text-center"><div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-sk-moss-700 text-xl text-white">✓</div><div className="text-[10px] font-bold text-white sm:text-xs">Equipment Saved</div><div className="mt-1 text-[8px] text-white/40 sm:text-[9px]">Linked to SL-84721</div></div></div><div className="mt-2 text-center"><div className="text-[10px] font-bold text-sk-text sm:text-xs">Record saved</div></div></div></Reveal>
+                </div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ── Connecting to Equipment Management ─────────────── */}
+      <Reveal>
+        <section className="overflow-hidden rounded-2xl border border-sk-blue-200 bg-white shadow-sm">
+          <div className="border-b border-sk-blue-200 bg-gradient-to-r from-sk-blue-100 to-sk-mint-100 px-5 py-4 sm:px-8 sm:py-5">
+            <h2 className="text-base font-bold text-sk-dark-900 sm:text-xl" style={{ fontFamily: "var(--font-outfit)", letterSpacing: "-0.02em" }}>
+              How This Connects to Equipment Management
+            </h2>
+            <p className="mt-1 text-[10px] text-sk-text-medium sm:text-xs">
+              Two initiatives building the same capability from opposite directions — together, they&apos;re significantly more powerful than either alone.
+            </p>
+          </div>
+
+          <div className="p-5 sm:p-8">
+            {/* The two halves */}
+            <p className="mb-5 text-xs leading-relaxed text-sk-text sm:text-sm">
+              The Equipment Management initiative is building a <span className="font-semibold">structured equipment record</span> — a rich data model with status tracking (Active, Out of Service, Under Repair, Replaced), condition monitoring (Good, Fair, Poor, Critical), warranty lifecycle management with auto-calculated expirations, document uploads, and service history linking. This gives Skimmer the <span className="font-semibold">container</span> — the schema, the UI, the workflows.
+            </p>
+            <p className="mb-5 text-xs leading-relaxed text-sk-text sm:text-sm">
+              Photo Intelligence is building the <span className="font-semibold">data pipeline</span> — automated extraction of brand, model, serial, and manufacture dates from photos techs already take. This gives Skimmer the <span className="font-semibold">data</span> to fill that container, at scale, without manual entry.
+            </p>
+
+            {/* Side by side comparison */}
+            <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+              <div className="rounded-xl border-l-4 border-l-sk-blue bg-sk-blue-100 p-4">
+                <div className="text-xs font-bold text-sk-dark sm:text-sm" style={{ fontFamily: "var(--font-outfit)" }}>Equipment Management</div>
+                <div className="mt-0.5 text-[10px] text-sk-text-medium sm:text-xs">Builds the container</div>
+                <ul className="mt-2.5 space-y-1 text-[10px] text-sk-text-medium sm:text-xs">
+                  {["Data model: status, condition, warranty, lifecycle","UI: web accordion + mobile tab bar","Warranty auto-calculation (start date + duration)","6 status values, 4 condition values","Document uploads, service history linking"].map(t => (
+                    <li key={t} className="flex items-start gap-1.5"><span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-sk-dark" />{t}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-xl border-l-4 border-l-sk-moss-700 bg-sk-moss-100 p-4">
+                <div className="text-xs font-bold text-sk-dark sm:text-sm" style={{ fontFamily: "var(--font-outfit)" }}>Photo Intelligence</div>
+                <div className="mt-0.5 text-[10px] text-sk-text-medium sm:text-xs">Fills the container</div>
+                <ul className="mt-2.5 space-y-1 text-[10px] text-sk-text-medium sm:text-xs">
+                  {["AI extracts brand, model, serial from existing photos","100% brand accuracy on readable dataplates","70K historical photos → 19-35K pre-populated records","On-device OCR: every new photo auto-builds records","AI-assisted condition assessment from photo analysis"].map(t => (
+                    <li key={t} className="flex items-start gap-1.5"><span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-sk-moss-700" />{t}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* The cold start problem */}
+            <div className="mb-5 rounded-xl border-l-4 border-l-sk-sunrise bg-sk-sunrise-100 p-4 sm:p-5">
+              <h3 className="text-xs font-bold text-sk-sunrise sm:text-sm" style={{ fontFamily: "var(--font-outfit)" }}>The Cold Start Problem</h3>
+              <p className="mt-2 text-[10px] leading-relaxed text-sk-text sm:text-xs">
+                Equipment Management assumes office admins will manually create equipment records — typing brand, model, serial, install dates, and warranty terms for every piece of equipment at every customer location. A company with 500 service locations and 3-4 pieces of equipment each means <span className="font-semibold">1,500-2,000 records to create by hand.</span> Realistically, most companies won&apos;t do this. The feature ships, adoption stays low, and the structured data remains mostly empty.
+              </p>
+              <p className="mt-2 text-[10px] leading-relaxed text-sk-text sm:text-xs">
+                <span className="font-semibold">Photo Intelligence solves this.</span> Instead of starting with empty records, AI pre-populates 19,000-35,000 equipment records from photos techs have already taken. When an admin opens a customer&apos;s location for the first time, <span className="font-semibold">the equipment is already there.</span> Their job goes from &ldquo;create from scratch&rdquo; to &ldquo;verify and add warranty details&rdquo; — a 5-minute task instead of a 20-minute task.
+              </p>
+            </div>
+
+            {/* Together > apart */}
+            <div className="rounded-xl bg-sk-navy p-4 text-white sm:p-5">
+              <h4 className="text-xs font-bold sm:text-sm" style={{ fontFamily: "var(--font-outfit)" }}>Together &gt; Apart</h4>
+              <p className="mt-2 text-[10px] leading-relaxed text-white/75 sm:text-sm">
+                Without Photo Intelligence, Equipment Management is a manual data entry tool — slow adoption, incomplete data. Without Equipment Management, Photo Intelligence has data but no home in the product — internal-only value.{" "}
+                <span className="font-semibold text-sk-mint">Together: AI pre-populates the equipment records, admins verify and enrich with warranty details, the system gets smarter with every new photo.</span>{" "}
+                The data model provides the structure. The AI pipeline provides the data. Neither initiative needs to change scope — they just need to connect.
+              </p>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
       {/* ── Why This Matters ──────────────────────────────── */}
       <Reveal>
         <section className="overflow-hidden rounded-2xl bg-sk-navy p-6 text-white sm:p-10">
